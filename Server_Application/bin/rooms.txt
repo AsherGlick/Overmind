@@ -1,0 +1,14 @@
+Officeroom1 800 1700 MAC1
+Officeroom2 800 1700 MAC2
+Officeroom3 1000 1500 MAC3
+Officeroom4 1200 1700 MAC4
+
+END
+Officeroom Database
+office rooms are stored in this fashion:
+Name Start_time End_time MAC
+where:
+Name is the unique id of the office room
+Start_time is the time that the room is open and available to reserve, presented in standard military time
+End_time is the time that the room is closed, represented in standard military time
+MAC is the mac address of the machine in the officeroom
