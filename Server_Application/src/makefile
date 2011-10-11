@@ -1,2 +1,2 @@
-all : main.cpp
-	g++ main.cpp -o ../bin/main.out -Wall
+all : ./src/main.cpp
+	g++ ./src/main.cpp -o ./bin/main.out -Wall -lpthread
