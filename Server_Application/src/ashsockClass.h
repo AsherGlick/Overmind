@@ -1,8 +1,8 @@
-/*
-| Licenced under the BSD (Open Licence)
-| this is a port for c (not much change) for basic low level socket control
-| to be used in a more convienient C++ 
-*/
+/******************************************************************************\
+| Licenced under the BSD (Open Licence)                                        |
+| this is a port for c (not much change) for basic low level socket control    |
+| to be used in a more convienient C++                                         |
+\******************************************************************************/
 /********************************* FUNCTIONS **********************************\
 | sigchl_handler(int s)                                                        |
 | void *get_in_addr(struct sockaddr *sa)                                       |
@@ -14,7 +14,7 @@
 \******************************************************************************/
 #ifndef _ASHSOCK_CLASS_H_
 #define _ASHSOCK_CLASS_H_
-#include <stdio.h> // input out put
+#include <stdio.h>       // input output
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
@@ -41,6 +41,9 @@
   #define BACKLOG 10
 #endif
 
+/***************************** SOCKETLINK : CLASS *****************************\
+|
+\******************************************************************************/
 class socketLink {
   private:
     int _fd; // file descriptor
@@ -48,14 +51,19 @@ class socketLink {
     std::string _ipAddress;
     std::string _port;
   public:
-    socketLink();                                                // null inherit
-    ~socket();
-    void close();
+    socketLink();// null inherit
+    ~socketLink();
+    //void close();
     std::string waitData();
-    bool connect(std::string ipAddress, std::);
+    bool connect(std::string ipAddress, std::string port);
     bool inherit(int fd, std::string ipAddress, std::string port);
+    
+    bool sendData (int & clientSockFD, std::string output);
 };
 
+/************************** SOCKETLINK : CONSTRUCTOR **************************\
+|
+\******************************************************************************/
 socketLink::socketLink()
 {
   _fd = -1;
@@ -65,10 +73,11 @@ socketLink::socketLink()
 }
 
 
-/*\
-| This function needs to be re-written, to also test the connection. if the
-| connection is closed then _open is set to false and the function returns false
-\*/
+/**************************** SOCKETLINK : INHERIT ****************************\
+| This function needs to be re-written, to also test the connection. if the    |
+| connection is closed then _open is set to false and the function returns     |
+| false                                                                        |
+\******************************************************************************/
 bool socketLink::inherit(int fd, std::string ipAddress, std::string port)
 {
   _fd = fd;
@@ -78,27 +87,7 @@ bool socketLink::inherit(int fd, std::string ipAddress, std::string port)
   return _open;
 }
 
-
-
-
-
-
-
-
-class socketPort {
-  private:
-    int _fd; // file descriptor
-    bool _open; // true if socket is connected, false if not
-    std::string _ipAddress;
-    std::string _port;
-  public:
-    socket(std::string port);
-    socket(std::string ipAddress, std::string port);
-    ~socket();
-    void close();
-}
-
-
+/*
 void sigchld_handler(int s)
 {
     while(waitpid(-1, NULL, WNOHANG) > 0);
@@ -112,9 +101,9 @@ void *get_in_addr(struct sockaddr *sa)
         return &(((struct sockaddr_in*)sa)->sin_addr);
     }
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
-}
+}*/
 
-/********************************** Wait Data *********************************\
+/*************************** SOCKETLINK : WAIT DATA ***************************\
 | wait for data from a client socket file descriptor. The function return the
 | size of the data return in an allocated character array that must be freed
 \******************************************************************************/
@@ -131,7 +120,7 @@ std::string socketLink::waitData (){
     for (i = 0; i < MAXDATASIZE; i++) {
       buf[i] = 'Z';
     }
-    if ((numbytes = recv(&_sockFD, buf, MAXDATASIZE-1, 0)) == -1) {
+    if ((numbytes = recv(_fd, buf, MAXDATASIZE-1, 0)) == -1) {
       // no data waiting
       if (totalSize == 0) {
         free (data);
@@ -145,7 +134,7 @@ std::string socketLink::waitData (){
       //if a null byte is transfered the socket is closed
       printf ("Socket Closed, zero byte\n");
       //remove socket from list
-      close(&_fd);
+      close(_fd);
       _open = false;
       break;
     }
@@ -170,10 +159,10 @@ std::string socketLink::waitData (){
   return output;
 }
 
-/********************************** Send Data *********************************\
+/*************************** SOCKETLINK : SEND DATA ***************************\
 | This function sends out data and returns on sucess or failure
 \******************************************************************************/
-bool sendData (int & clientSockFD, std::string output){
+bool socketLink::sendData (int & clientSockFD, std::string output){
   int size = output.size();
   int sentData = 0;
   while (sentData < size) {
@@ -190,11 +179,30 @@ bool sendData (int & clientSockFD, std::string output){
 }
 
 
-/********************************* Wait Client ********************************\
+/***************************** SOCKETPORT : CLASS *****************************\
+| This class handles inbound connections
+\******************************************************************************/
+class socketPort {
+  private:
+    int _fd; // file descriptor
+    bool _open; // true if socket is connected, false if not
+    std::string _ipAddress;
+    std::string _port;
+  public:
+    void waitClient(int & clientSockFD, int & sockFD);
+    void bindPort (std::string port);
+    socketPort();
+    socketPort(std::string port);
+    ~socketPort();
+    //void close();
+};
+
+
+/************************** SOCKETPORT : WAIT CLIENT **************************\
 | Wait client waits for a client to connect to the server and returns a sockFD |
 | that connects to the client. This file descripter can be used in waitData    |
 \******************************************************************************/
-void tcp_socket::waitClient(int & clientSockFD, int & sockFD){
+void socketPort::waitClient(int & clientSockFD, int & sockFD){
   socklen_t sin_size;
   struct sockaddr_storage their_addr;
   char s[INET6_ADDRSTRLEN];
@@ -215,44 +223,11 @@ void tcp_socket::waitClient(int & clientSockFD, int & sockFD){
   }
 }
 
-
-/********************************** Wait Self *********************************\
-| Only lets itself connect to the socket (or 192.168.x.x) soon to be depricated|
-| when the IP data is stored in the class                                      |
-\******************************************************************************/
-int waitSelf(int & clientSockFD, int & sockFD){
-  socklen_t sin_size;
-  struct sockaddr_storage their_addr;
-  char s[INET6_ADDRSTRLEN];
-  
-  while(1) {
-    sin_size = sizeof their_addr;
-    clientSockFD = accept(sockFD, (struct sockaddr *)&their_addr, &sin_size);
-    if (clientSockFD == -1) {
-      perror("accept");
-      continue;
-    }
-    inet_ntop(their_addr.ss_family,get_in_addr((struct sockaddr *)&their_addr),s, sizeof s);
-    //printf("server: got connection from %s\n", s);
-    if (std::string(s) != "127.0.0.1" && std::string(s).substr(0,7) != "192.168") {
-      close(clientSockFD);
-      return -1;
-    }
-    
-    fcntl(clientSockFD,F_SETFL,O_NONBLOCK);
-    
-    return 0;
-  }
-}
-
-
-
-
-/********************************** Bind port *********************************\
+/*************************** SOCKETPORT : BIND PORT ***************************\
 | the bind port function binds itself to a specified port on the computer and  |
 | returns the file descriptor of the socket (UNIX-like os)                     |
 \******************************************************************************/
-void tcp_socket::bindPort (std::string port) {
+void socketPort::bindPort (std::string port) {
     struct addrinfo hints, *servinfo, *p;
     struct sigaction sa;
     int yes=1;
@@ -269,18 +244,18 @@ void tcp_socket::bindPort (std::string port) {
     }
     // loop through all the results and bind to the first we can
     for(p = servinfo; p != NULL; p = p->ai_next) {
-        if ((&_fd = socket(p->ai_family, p->ai_socktype,
+        if ((_fd = socket(p->ai_family, p->ai_socktype,
                 p->ai_protocol)) == -1) {
             perror("server: socket");
             continue;
         }
-        if (setsockopt(&_fd, SOL_SOCKET, SO_REUSEADDR, &yes,
+        if (setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &yes,
                 sizeof(int)) == -1) {
             perror("setsockopt");
             exit(1);
         }
-        if (bind(&_fd, p->ai_addr, p->ai_addrlen) == -1) {
-            close(&_fd);
+        if (bind(_fd, p->ai_addr, p->ai_addrlen) == -1) {
+            close(_fd);
             perror("server: bind");
             continue;
         }
@@ -291,7 +266,7 @@ void tcp_socket::bindPort (std::string port) {
         exit(2);
   }
   freeaddrinfo(servinfo); // all done with this structure
-  if (listen(&_fd, BACKLOG) == -1) {
+  if (listen(_fd, BACKLOG) == -1) {
       perror("listen");
       exit(1);
   }
