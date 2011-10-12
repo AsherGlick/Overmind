@@ -1,12 +1,10 @@
 #define MAXDATASIZE 100
-#include "ashsockPP.h"   // Basic Socket Functionality
-#include "ashHTMLPP.h"
+#include "ashsockPP.h" // Basic Socket Functionality
+#include "ashHTMLPP.h" // HTML Parsing
 #include <fstream>
 #include <iostream>
 #include <stdio.h>
-
-//threads
-#include <pthread.h>
+#include <pthread.h> // Threading
 
 
 #include "charprint.h"
@@ -17,7 +15,7 @@ using namespace std;
 #define DEFAULTWEBPATH "./web"
 
 
-void *waitoffWeb(void *threadid);
+void *diviceThread(void *threadid);
 
 /******************************************************************************\
 | Expand is a simple function to expand the size of a string by padding it     |
@@ -27,11 +25,15 @@ string expand(string data, int size) {
   return data+string(size-data.size(),' ');
 }
 
+/************************************ MAIN ************************************\
+|
+\******************************************************************************/
 
-int main () {
+int main ()
+{
   // Create Another Divice Thread
   pthread_t divice_thread;
-  pthread_create(&divice_thread, NULL, waitoffWeb, NULL);
+  pthread_create(&divice_thread, NULL, diviceThread, NULL);
   // Bind Web Socket
   string rec_web_data = "";
   int web_sockfd;
@@ -45,7 +47,8 @@ int main () {
   string webPath;
   webPathF.open("webPath");
   getline(webPathF,webPath);
-  if (webPath == "") {
+  if (webPath == "")
+  {
     cout << "[WARNING] No Web Path Found. Using Default Webpath" << endl;
     webPath = DEFAULTWEBPATH;
   }
@@ -121,8 +124,11 @@ int main () {
 	// End Waiting for connections
 }
 
-/* the program that is threaded in the begining */
-void *waitoffWeb(void *threadid) {
+/******************************** DIVICE THREAD *******************************\
+| 
+\******************************************************************************/
+void *diviceThread(void *threadid)
+{
   // Bind Divice Socket
   string rec_web_data = "";
   int web_sockfd;
