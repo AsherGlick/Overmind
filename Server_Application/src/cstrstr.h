@@ -1,6 +1,8 @@
 /* This is a custom program for converting between strings (c++) and 
 strings (c)
 */
+#ifndef _cstrstr_h_
+#define _cstrstr_h_
 #include <string>
 int freestr(char * str) {
   return 0;//free(str);
@@ -32,4 +34,4 @@ int stringtoStr(char * & str, std::string cppstr) {
 char * stringtoStr(std::string str) {
   return 0;
 }
-
+#endif

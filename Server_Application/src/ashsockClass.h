@@ -12,8 +12,8 @@
 | int waitSelf(int & clientSockFD, int & sockFD)      [Soon to be depricated]  |
 | void bindPort (int & sockfd, std::string port)                               |
 \******************************************************************************/
-#ifndef _ASHSOCK_PP_H_
-#define _ASHSOCK_PP_H_
+#ifndef _ASHSOCK_CLASS_H_
+#define _ASHSOCK_CLASS_H_
 #include <stdio.h> // input out put
 #include <stdlib.h>
 #include <unistd.h>
@@ -41,27 +41,50 @@
   #define BACKLOG 10
 #endif
 
-class tcp_socket {
+class socketLink {
   private:
-    bool _incoming; // true = incoming false=outbound
     int _fd; // file descriptor
     bool _open; // true if socket is connected, false if not
     std::string _ipAddress;
     std::string _port;
   public:
-    socket(std::string port);
-    socket(std::string ipAddress, std::string port);
+    socketLink();                                                // null inherit
     ~socket();
     void close();
     std::string waitData();
+    bool connect(std::string ipAddress, std::);
+    bool inherit(int fd, std::string ipAddress, std::string port);
+};
+
+socketLink::socketLink()
+{
+  _fd = -1;
+  _open = false;
+  _ipAddress = "0.0.0.0";
+  _port = "-1";
 }
 
-class socket {
-  private:
-    
-  public:
-    
+
+/*\
+| This function needs to be re-written, to also test the connection. if the
+| connection is closed then _open is set to false and the function returns false
+\*/
+bool socketLink::inherit(int fd, std::string ipAddress, std::string port)
+{
+  _fd = fd;
+  _ipAddress = ipAddress;
+  _port = port;
+  _open = true;
+  return _open;
 }
+
+
+
+
+
+
+
+
 class socketPort {
   private:
     int _fd; // file descriptor
@@ -73,7 +96,6 @@ class socketPort {
     socket(std::string ipAddress, std::string port);
     ~socket();
     void close();
-    std::string waitData();
 }
 
 
@@ -96,7 +118,7 @@ void *get_in_addr(struct sockaddr *sa)
 | wait for data from a client socket file descriptor. The function return the
 | size of the data return in an allocated character array that must be freed
 \******************************************************************************/
-std::string tcp_socket::waitData (){
+std::string socketLink::waitData (){
   char * data;
   char buf[MAXDATASIZE];
   char * tempData;
