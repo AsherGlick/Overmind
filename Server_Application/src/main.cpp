@@ -1,6 +1,7 @@
 #define MAXDATASIZE 100
 #include "ashsockPP.h" // Basic Socket Functionality
 #include "ashHTMLPP.h" // HTML Parsing
+#include "ashsockClass.h"
 #include <fstream>
 #include <iostream>
 #include <stdio.h>
@@ -26,7 +27,7 @@ string expand(string data, int size) {
 }
 
 /************************************ MAIN ************************************\
-|
+| 
 \******************************************************************************/
 
 int main ()
