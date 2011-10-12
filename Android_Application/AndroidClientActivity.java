@@ -2,16 +2,13 @@ package overmind.androidapp;
 
 import android.app.Activity;
 import android.os.Bundle;
-<<<<<<< .merge_file_An7bG4
 //import android.view.View;
 import android.widget.Toast;
 //import android.widget.RadioButton;
-=======
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 import android.widget.Button;
->>>>>>> .merge_file_WiWsH0
 import android.widget.EditText;
 import java.io.*;
 import java.net.*;
@@ -33,21 +30,15 @@ public class AndroidClientActivity extends Activity {
 	
 	/** Called when the activity is first created. */
     @Override
-<<<<<<< .merge_file_An7bG4
-    public void onCreate(Bundle savedInstanceState) {
-=======
     public void onCreate(Bundle savedInstanceState) 
     {
     	//Does all the initiations
->>>>>>> .merge_file_WiWsH0
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         Toast.makeText(this, "Attempting to connect to server", Toast.LENGTH_LONG).show();
         text = (EditText) findViewById(R.id.editText1);
         text.setText("eeyup");
-<<<<<<< .merge_file_An7bG4
         try{
-=======
         button1 = (Button) findViewById(R.id.button1);
         button1.setOnClickListener(new OnClickListener() 
         {
@@ -61,7 +52,6 @@ public class AndroidClientActivity extends Activity {
 		((FrameLayout) findViewById(R.id.preview)).addView(preview);
         try
         {
->>>>>>> .merge_file_WiWsH0
         	socket = new Socket( "server.overmind.com", 8080 );
         	 // Create an input stream to receive data from the server
             fromServer = new DataInputStream( socket.getInputStream() );
@@ -73,16 +63,16 @@ public class AndroidClientActivity extends Activity {
             Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show();
             text.setText(ack);
         }
-<<<<<<< .merge_file_An7bG4
-        catch(IOException ex){
-=======
         catch(IOException ex)
         {
->>>>>>> .merge_file_WiWsH0
         	Toast.makeText(this, "Failed ", Toast.LENGTH_LONG).show();
         	Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
         }
- 		
+        catch(IOException ex)
+        {
+        	Toast.makeText(this, "Failed ", Toast.LENGTH_LONG).show();
+        	Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
+        }
     }
     //sends information to the server and attempts to retrieve the schedule for a particular room
     public void getSchedule()
