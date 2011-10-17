@@ -33,9 +33,9 @@
 #include "cstrstr.h"
 
 
-//#ifndef MAXDATASIZE
-//  #define MAXDATASIZE 8000
-//#endif
+#ifndef MAXDATASIZE
+  #define MAXDATASIZE 8000
+#endif
 
 #ifndef BACKLOG
   #define BACKLOG 10
@@ -72,7 +72,10 @@ socketLink::socketLink()
   _port = "-1";
 }
 
-
+socketLink::~socketLink()
+{
+  close(_fd);
+}
 /**************************** SOCKETLINK : INHERIT ****************************\
 | This function needs to be re-written, to also test the connection. if the    |
 | connection is closed then _open is set to false and the function returns     |
@@ -87,7 +90,7 @@ bool socketLink::inherit(int fd, std::string ipAddress, std::string port)
   return _open;
 }
 
-/*
+
 void sigchld_handler(int s)
 {
     while(waitpid(-1, NULL, WNOHANG) > 0);
@@ -101,7 +104,7 @@ void *get_in_addr(struct sockaddr *sa)
         return &(((struct sockaddr_in*)sa)->sin_addr);
     }
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
-}*/
+}
 
 /*************************** SOCKETLINK : WAIT DATA ***************************\
 | wait for data from a client socket file descriptor. The function return the
@@ -186,41 +189,67 @@ class socketPort {
   private:
     int _fd; // file descriptor
     bool _open; // true if socket is connected, false if not
-    std::string _ipAddress;
     std::string _port;
   public:
-    void waitClient(int & clientSockFD, int & sockFD);
-    void bindPort (std::string port);
     socketPort();
     socketPort(std::string port);
     ~socketPort();
+    
+    socketLink waitClient();
+    void bindPort (std::string port);
+    
     //void close();
+    std::string getPort();
+    bool isOpen();
 };
+/************************** SOCKETPORT : CONSTRUCTOR **************************\
+|
+\******************************************************************************/
 
+socketPort::socketPort()
+{
+  _open = false;
+  _fd = -1;
+  _port = "0";
+}
+/************************** SOCKETPORT : CONSTRUCTOR **************************\
+|
+\******************************************************************************/
 
+socketPort::socketPort(std::string port)
+{
+  bindPort(port);
+}
+
+socketPort::~socketPort() {
+  close(_fd);
+}
 /************************** SOCKETPORT : WAIT CLIENT **************************\
 | Wait client waits for a client to connect to the server and returns a sockFD |
 | that connects to the client. This file descripter can be used in waitData    |
 \******************************************************************************/
-void socketPort::waitClient(int & clientSockFD, int & sockFD){
+socketLink socketPort::waitClient(){
+  int clientSockFD;
   socklen_t sin_size;
   struct sockaddr_storage their_addr;
   char s[INET6_ADDRSTRLEN];
-  
+  socketLink link;
   while(1) {
     sin_size = sizeof their_addr;
-    clientSockFD = accept(sockFD, (struct sockaddr *)&their_addr, &sin_size);
+    clientSockFD = accept(_fd, (struct sockaddr *)&their_addr, &sin_size);
     if (clientSockFD == -1) {
       perror("accept");
       continue;
     }
     inet_ntop(their_addr.ss_family,get_in_addr((struct sockaddr *)&their_addr),s, sizeof s);
-    //printf("server: got connection from %s\n", s);
+    printf("server: got connection from %s\n", s);
     
     fcntl(clientSockFD,F_SETFL,O_NONBLOCK);
     
     break;
   }
+  link.inherit(_fd,s
+  return link;
 }
 
 /*************************** SOCKETPORT : BIND PORT ***************************\
@@ -277,5 +306,21 @@ void socketPort::bindPort (std::string port) {
       perror("sigaction");
       exit(1);
   }
+}
+
+/**************************** SOCKETPORT : GETPORT ****************************\
+|
+\******************************************************************************/
+std::string socketPort::getPort()
+{
+  return _port;
+}
+/***************************** SOCKETPORT : ISOPEN ****************************\
+|
+\******************************************************************************/
+
+bool socketPort::isOpen()
+{
+  return _open;
 }
 #endif

@@ -1,7 +1,8 @@
 #define MAXDATASIZE 100
-#include "ashsockPP.h" // Basic Socket Functionality
-#include "ashHTMLPP.h" // HTML Parsing
+//#include "ashsockPP.h" // Basic Socket Functionality
 #include "ashsockClass.h"
+#include "ashHTMLPP.h" // HTML Parsing
+
 #include <fstream>
 #include <iostream>
 #include <stdio.h>
@@ -40,8 +41,12 @@ int main ()
   int web_sockfd;
   int clientSockFD;
   string port = "80";
-  bindPort (web_sockfd, port); // From ashsockPP.h
-  cout << "[INFO] Bound Web Port " << port << endl;
+  
+  socketPort connectPort;
+  connectPort.bindPort(port);
+  
+  //bindPort (web_sockfd, port); // From ashsockPP.h////////////////////////////
+  cout << "[INFO] Bound Web Port " << connectPort.getPort() << endl;
   // End Bind Websocket
   // Load Webpath
   ifstream webPathF;

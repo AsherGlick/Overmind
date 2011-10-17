@@ -1,7 +1,6 @@
 #ifndef _ASHAJAX_PP_H_
 #define _ASHAJAX_PP_H_
 #include <string>
-#include "ashsockPP.h"
 
 #define HTML_GET "GET"
 #define HTML_POST "POST"
