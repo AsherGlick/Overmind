@@ -91,20 +91,7 @@ bool socketLink::inherit(int fd, std::string ipAddress, std::string port)
 }
 
 
-void sigchld_handler(int s)
-{
-    while(waitpid(-1, NULL, WNOHANG) > 0);
-}
 
-
-// get sockaddr, IPv4 or IPv6:
-void *get_in_addr(struct sockaddr *sa)
-{
-    if (sa->sa_family == AF_INET) {
-        return &(((struct sockaddr_in*)sa)->sin_addr);
-    }
-    return &(((struct sockaddr_in6*)sa)->sin6_addr);
-}
 
 /*************************** SOCKETLINK : WAIT DATA ***************************\
 | wait for data from a client socket file descriptor. The function return the
@@ -190,6 +177,8 @@ class socketPort {
     int _fd; // file descriptor
     bool _open; // true if socket is connected, false if not
     std::string _port;
+    //void sigchld_handler(int s);
+    void * get_in_addr(struct sockaddr *sa);
   public:
     socketPort();
     socketPort(std::string port);
@@ -201,11 +190,29 @@ class socketPort {
     //void close();
     std::string getPort();
     bool isOpen();
+    void closePort();
 };
-/************************** SOCKETPORT : CONSTRUCTOR **************************\
-|
-\******************************************************************************/
 
+
+void sigchld_handler(int s)
+{
+    while(waitpid(-1, NULL, WNOHANG) > 0);
+}
+
+
+// get sockaddr, IPv4 or IPv6:
+void * socketPort::get_in_addr(struct sockaddr *sa)
+{
+    if (sa->sa_family == AF_INET) {
+        return &(((struct sockaddr_in*)sa)->sin_addr);
+    }
+    return &(((struct sockaddr_in6*)sa)->sin6_addr);
+}
+
+/************************** SOCKETPORT : CONSTRUCTOR **************************\
+| This blank Constructor does nothing more then initilize variables to default |
+| values. These values are not intended to be used for any reason              |
+\******************************************************************************/
 socketPort::socketPort()
 {
   _open = false;
@@ -213,14 +220,17 @@ socketPort::socketPort()
   _port = "0";
 }
 /************************** SOCKETPORT : CONSTRUCTOR **************************\
-|
+| This constructor calls the bind port function and is a simple way to create  |
+| and bind a port with one line of code instead of two                         |
 \******************************************************************************/
-
 socketPort::socketPort(std::string port)
 {
   bindPort(port);
 }
-
+/************************* SOCKETPORT : DECONSTRUCTOR *************************\
+| The deconstructor closes the socket to prevent the file descriptor from      |
+| wasted and to prevent the other connection from staying open                 |
+\******************************************************************************/
 socketPort::~socketPort() {
   close(_fd);
 }
@@ -248,7 +258,7 @@ socketLink socketPort::waitClient(){
     
     break;
   }
-  link.inherit(_fd,s
+  link.inherit(_fd,s,_port);// THE PORT VALUE MAY NEED TO BE CHANGED
   return link;
 }
 
@@ -309,18 +319,25 @@ void socketPort::bindPort (std::string port) {
 }
 
 /**************************** SOCKETPORT : GETPORT ****************************\
-|
+| This function returns what port the socket is currently bound on. The value  |
+| is saved in the class and is just returned as a result                       |
 \******************************************************************************/
 std::string socketPort::getPort()
 {
   return _port;
 }
 /***************************** SOCKETPORT : ISOPEN ****************************\
-|
+| This function returns a boolian value of weather the socket is currently     |
+| open. In the socketport class isopen will only be false when close is called |
 \******************************************************************************/
-
 bool socketPort::isOpen()
 {
   return _open;
+}
+/*************************** SOCKETPORT : CLOSE PORT **************************\
+| 
+\******************************************************************************/
+void socketPort::closePort() {
+  close(_fd);
 }
 #endif
