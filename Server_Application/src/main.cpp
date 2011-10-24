@@ -33,9 +33,16 @@ string expand(string data, int size) {
 
 int main ()
 {
-  // Create Another Divice Thread
+  // Create Another Thread for handeling Android Connections
   pthread_t divice_thread;
   pthread_create(&divice_thread, NULL, diviceThread, NULL);
+  // Create Another Thread for HTML Connections
+  pthread_t html_thread
+  pthread_create(&html_thread,NULL,htmlThread,NULL);
+}
+void * htmlThread (void*)
+{
+  // HTML SOCKET INFORMATION
   // Bind Web Socket
   string rec_web_data = "";
   int web_sockfd;
@@ -45,7 +52,6 @@ int main ()
   socketPort connectPort;
   connectPort.bindPort(port);
   
-  //bindPort (web_sockfd, port); // From ashsockPP.h////////////////////////////
   cout << "[INFO] Bound Web Port " << connectPort.getPort() << endl;
   // End Bind Websocket
   // Load Webpath
@@ -131,7 +137,7 @@ int main ()
 }
 
 /******************************** DIVICE THREAD *******************************\
-| 
+| A thread function to handle the connections from the android divices
 \******************************************************************************/
 void *diviceThread(void *threadid)
 {

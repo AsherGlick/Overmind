@@ -59,7 +59,7 @@ html::html(std::string input) {
   set = true;
 }
 
-/***************************** SET POST ***************************************\
+/******************************************************************************\
 | Internal function to set the POST data (if any) based off of the raw data    |
 \******************************************************************************/
 void html::setPOST () {
@@ -79,7 +79,7 @@ void html::setPOST () {
   }
   post = raw.substr(postStart,postStop-postStart);
 }
-/**************************** SET HOST ****************************************\
+/******************************************************************************\
 | Internal function to set the host value based off of the raw data            |
 \******************************************************************************/
 void html::setHost() {
