@@ -58,9 +58,13 @@ class socketLink {
     bool connect(std::string ipAddress, std::string port);
     bool inherit(int fd, std::string ipAddress, std::string port);
     
-    bool sendData (int & clientSockFD, std::string output);
+    bool sendData (std::string output);
+    std::string getIP();
 };
 
+std::string socketLink::getIP() {
+  return _ipAddress;
+}
 /************************** SOCKETLINK : CONSTRUCTOR **************************\
 |
 \******************************************************************************/
@@ -74,7 +78,7 @@ socketLink::socketLink()
 
 socketLink::~socketLink()
 {
-  close(_fd);
+  //close(_fd);
 }
 /**************************** SOCKETLINK : INHERIT ****************************\
 | This function needs to be re-written, to also test the connection. if the    |
@@ -91,7 +95,20 @@ bool socketLink::inherit(int fd, std::string ipAddress, std::string port)
 }
 
 
+void sigchld_handler(int s)
+{
+    while(waitpid(-1, NULL, WNOHANG) > 0);
+}
 
+
+// get sockaddr, IPv4 or IPv6:
+void *get_in_addr(struct sockaddr *sa)
+{
+    if (sa->sa_family == AF_INET) {
+        return &(((struct sockaddr_in*)sa)->sin_addr);
+    }
+    return &(((struct sockaddr_in6*)sa)->sin6_addr);
+}
 
 /*************************** SOCKETLINK : WAIT DATA ***************************\
 | wait for data from a client socket file descriptor. The function return the
@@ -152,13 +169,13 @@ std::string socketLink::waitData (){
 /*************************** SOCKETLINK : SEND DATA ***************************\
 | This function sends out data and returns on sucess or failure
 \******************************************************************************/
-bool socketLink::sendData (int & clientSockFD, std::string output){
+bool socketLink::sendData (std::string output){
   int size = output.size();
   int sentData = 0;
   while (sentData < size) {
     size -= sentData;
     output = output.substr(sentData,size);
-    sentData = send(clientSockFD, output.c_str(), size, 0);
+    sentData = send(_fd, output.c_str(), size, 0);
     if (sentData <= -1) {
       sentData = 0;
       continue;
@@ -177,8 +194,6 @@ class socketPort {
     int _fd; // file descriptor
     bool _open; // true if socket is connected, false if not
     std::string _port;
-    //void sigchld_handler(int s);
-    void * get_in_addr(struct sockaddr *sa);
   public:
     socketPort();
     socketPort(std::string port);
@@ -190,28 +205,9 @@ class socketPort {
     //void close();
     std::string getPort();
     bool isOpen();
-    void closePort();
 };
-
-
-void sigchld_handler(int s)
-{
-    while(waitpid(-1, NULL, WNOHANG) > 0);
-}
-
-
-// get sockaddr, IPv4 or IPv6:
-void * socketPort::get_in_addr(struct sockaddr *sa)
-{
-    if (sa->sa_family == AF_INET) {
-        return &(((struct sockaddr_in*)sa)->sin_addr);
-    }
-    return &(((struct sockaddr_in6*)sa)->sin6_addr);
-}
-
 /************************** SOCKETPORT : CONSTRUCTOR **************************\
-| This blank Constructor does nothing more then initilize variables to default |
-| values. These values are not intended to be used for any reason              |
+|
 \******************************************************************************/
 socketPort::socketPort()
 {
@@ -220,19 +216,15 @@ socketPort::socketPort()
   _port = "0";
 }
 /************************** SOCKETPORT : CONSTRUCTOR **************************\
-| This constructor calls the bind port function and is a simple way to create  |
-| and bind a port with one line of code instead of two                         |
+|
 \******************************************************************************/
 socketPort::socketPort(std::string port)
 {
   bindPort(port);
 }
-/************************* SOCKETPORT : DECONSTRUCTOR *************************\
-| The deconstructor closes the socket to prevent the file descriptor from      |
-| wasted and to prevent the other connection from staying open                 |
-\******************************************************************************/
+
 socketPort::~socketPort() {
-  close(_fd);
+  //close(_fd);
 }
 /************************** SOCKETPORT : WAIT CLIENT **************************\
 | Wait client waits for a client to connect to the server and returns a sockFD |
@@ -244,6 +236,8 @@ socketLink socketPort::waitClient(){
   struct sockaddr_storage their_addr;
   char s[INET6_ADDRSTRLEN];
   socketLink link;
+  std::string linkIP;
+  std::string linkPORT;
   while(1) {
     sin_size = sizeof their_addr;
     clientSockFD = accept(_fd, (struct sockaddr *)&their_addr, &sin_size);
@@ -252,13 +246,13 @@ socketLink socketPort::waitClient(){
       continue;
     }
     inet_ntop(their_addr.ss_family,get_in_addr((struct sockaddr *)&their_addr),s, sizeof s);
-    printf("server: got connection from %s\n", s);
+    //printf("server: got connection from %s\n", s);
     
     fcntl(clientSockFD,F_SETFL,O_NONBLOCK);
     
     break;
   }
-  link.inherit(_fd,s,_port);// THE PORT VALUE MAY NEED TO BE CHANGED
+  link.inherit(clientSockFD,std::string(s),"-1");
   return link;
 }
 
@@ -319,25 +313,18 @@ void socketPort::bindPort (std::string port) {
 }
 
 /**************************** SOCKETPORT : GETPORT ****************************\
-| This function returns what port the socket is currently bound on. The value  |
-| is saved in the class and is just returned as a result                       |
+|
 \******************************************************************************/
 std::string socketPort::getPort()
 {
   return _port;
 }
 /***************************** SOCKETPORT : ISOPEN ****************************\
-| This function returns a boolian value of weather the socket is currently     |
-| open. In the socketport class isopen will only be false when close is called |
+|
 \******************************************************************************/
+
 bool socketPort::isOpen()
 {
   return _open;
-}
-/*************************** SOCKETPORT : CLOSE PORT **************************\
-| 
-\******************************************************************************/
-void socketPort::closePort() {
-  close(_fd);
 }
 #endif
