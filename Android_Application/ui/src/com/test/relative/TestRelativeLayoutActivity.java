@@ -1,8 +1,12 @@
 package com.test.relative;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.GridView;
+import android.widget.TextView;
 
 public class TestRelativeLayoutActivity extends Activity {
     /** Called when the activity is first created. */
@@ -27,8 +31,19 @@ public class TestRelativeLayoutActivity extends Activity {
     public void testPage(View view) {
         // Kablam
     	setContentView(R.layout.page2_main);
+        GridView tv = (GridView) findViewById(R.id.gridView1);
+        String[] listItems = {"item 1", "item 2 ", "list", "android", "item 3", "foobar", "bar", }; 
+        tv.setLayoutParams(new GridView.LayoutParams(85, 85));
+        ArrayAdapter arrayAdapter1 = new ArrayAdapter(this, android.R.layout.simple_list_item_1, listItems);
+		tv.setAdapter(arrayAdapter1);
+        
     	
     }
+    
+    
+    
+    
+    
     /*private static final String[] COUNTRIES = new String[] {
         "Belgium", "France", "Italy", "Germany2", "Spain"
     };*/
