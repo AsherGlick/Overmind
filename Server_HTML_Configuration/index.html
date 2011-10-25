@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <script type="text/javascript" src="js/jquery-1.5.1.min.js"></script>
+    <script type="text/javascript">	
+      $.ajax({
+        type: "POST",
+				url: serverURL,
+				data: "CONFIG:",
+				dataType: "html",
+				success: function(data)
+				{
+				  $("#global_plugins_data").html(data);
+				},
+				error: function(data)
+				{
+				  $("#global_plugins_data").html("<p>Error loading data</p>")
+				}
+			});	
+    </script>
+  </head>
+  <body>
+    This is the configuration menu for the Overmind Server
+    <br />
+    <input type="submit" value="refresh"> <br />
+    <input type="text" id="new_room"> <input type="submit" value="Add room"> <br />
+    
+    
+  </body>
+</html>
