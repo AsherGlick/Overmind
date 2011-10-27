@@ -13,7 +13,6 @@ class room
 		list<reserve> schedule;
 	public:
 		room(string newID, int NewStart, int NewEnd);
-		string getRoomID();
 		int getStart();
 		int getEnd();
 		void viewSchedule(int month, int day, int year);

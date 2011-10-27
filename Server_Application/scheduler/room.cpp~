@@ -11,10 +11,6 @@ room::room(string newID, int newStart, int newEnd)
 	timeStart = newStart;
 	timeEnd = newEnd;
 }
-string room::getRoomID()
-{
-	return roomID;
-}
 int room::getStart()
 {
 	return timeStart;

@@ -61,9 +61,6 @@ int main(int argc, char* argv[])
 		{
 			printRooms(roomList);
 		}
-		char * pch;
-		pch = strtok (temp," ");
-		
 	}
 	//we never get here unless exit is called
 	return 0;
