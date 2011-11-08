@@ -11,6 +11,10 @@ room::room(string newID, int newStart, int newEnd)
 	timeStart = newStart;
 	timeEnd = newEnd;
 }
+string room::getRoomID()
+{
+	return roomID;
+}
 int room::getStart()
 {
 	return timeStart;
@@ -25,10 +29,10 @@ void room::viewSchedule(int month, int day, int year)
 	list<reserve>::iterator itr;
 	for(itr=schedule.begin(); itr != schedule.end(); itr++)
 	{
-		if((month == itr->getMonth())&&(day == itr->getDay())&&(year == itr->getYear()))
-		{
+	//	if((month == itr->getMonth())&&(day == itr->getDay())&&(year == itr->getYear()))
+	//	{
 			cout<<itr->getName()<<" has reserved this room for "<<itr->getReserveTime()<<endl;
-		}
+	//	}
 	}
 }
 
@@ -56,8 +60,9 @@ void room::reserveRoom(int month, int day, int year, int id, string name, int st
 	}
 	for(int i=startTime; i!=endTime; i=i+100)
 	{
-		reserve temp(i, day, month, year, id, name);
+		reserve temp(i, month, day, year, id, name);
 		schedule.push_back(temp);
+		cout<<"congrats your room has been reserved for "<<i<<endl;
 	}
 }
 void room::unreserveRoom(int month, int day, int year, int id, int startTime, int endTime)

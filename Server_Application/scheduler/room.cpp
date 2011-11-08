@@ -60,8 +60,9 @@ void room::reserveRoom(int month, int day, int year, int id, string name, int st
 	}
 	for(int i=startTime; i!=endTime; i=i+100)
 	{
-		reserve temp(i, day, month, year, id, name);
+		reserve temp(i, month, day, year, id, name);
 		schedule.push_back(temp);
+		cout<<"congrats your room has been reserved for "<<i<<endl;
 	}
 }
 void room::unreserveRoom(int month, int day, int year, int id, int startTime, int endTime)
