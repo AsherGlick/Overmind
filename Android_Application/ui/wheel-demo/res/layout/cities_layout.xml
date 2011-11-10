@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <TextView
+    	android:id="@+id/textView1" 
+    	android:textAppearance="?android:attr/textAppearanceMedium"
+    	android:layout_width="wrap_content" 
+    	android:layout_height="wrap_content" 
+    	android:text="When would you like\nto reserve the room?" 
+    	android:gravity="center_vertical|center_horizontal" 
+    	android:layout_alignParentTop="true" 
+    	android:layout_alignParentLeft="true" 
+    	android:layout_alignParentRight="true" />
+    <ImageButton
+    	android:id="@+id/nextDay"
+    	android:onClick="nextDay"
+    	android:layout_width="wrap_content" 
+    	android:layout_height="wrap_content" 
+    	android:src="@android:drawable/ic_media_ff" 
+    	android:layout_alignTop="@+id/prevDay" 
+    	android:layout_alignParentRight="true" 
+    	android:layout_marginRight="45dp" />
+    <ImageButton 
+    	android:id="@+id/prevDay" 
+    	android:onClick="prevDay"
+    	android:layout_width="wrap_content" 
+    	android:layout_height="wrap_content" 
+    	android:src="@android:drawable/ic_media_rew" 
+    	android:layout_below="@+id/textView1" 
+    	android:layout_alignParentLeft="true" 
+    	android:layout_marginLeft="45dp" 
+    	android:layout_marginTop="5dp" />
+    <TextView 
+    	android:id="@+id/whichDay"
+    	android:clickable="true"
+    	android:onClick="dateDialog"
+    	android:textAppearance="?android:attr/textAppearanceLarge" 
+    	android:layout_height="wrap_content" 
+    	android:gravity="center_vertical|center_horizontal" 
+    	android:layout_width="wrap_content" 
+    	android:text="Loading.." 
+    	android:layout_alignTop="@+id/prevDay" 
+    	android:layout_alignBottom="@+id/prevDay" 
+    	android:layout_toRightOf="@+id/prevDay" 
+    	android:layout_toLeftOf="@+id/nextDay" />
+    
+    <TextView 
+    	android:id="@+id/selectedDate" 
+    	android:layout_height="wrap_content" 
+    	android:text="" 
+    	android:textAppearance="?android:attr/textAppearanceMedium" 
+    	android:layout_width="wrap_content" 
+    	android:layout_below="@+id/whichDay" 
+    	android:layout_centerHorizontal="true" />
+ 	  
+	  	
+		
+			
+    	
+    <TableLayout 
+    	android:id="@+id/tableLayout1" 
+    	android:layout_width="wrap_content" 
+    	android:layout_height="wrap_content" 
+    	android:layout_below="@+id/imageButton2" 
+    	android:layout_alignLeft="@+id/imageButton2" 
+    	android:layout_alignRight="@+id/imageButton1">
+        <TableRow 
+        	android:id="@+id/tableRow2" 
+        	android:layout_width="wrap_content" 
+        	android:layout_height="wrap_content" >
+        </TableRow>
+    </TableLayout>
+		
+		
+		<LinearLayout android:id="@+id/linearLayout1" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/selectedDate" android:layout_alignParentRight="true" android:layout_toRightOf="@+id/tableLayout1">
+			<kankan.wheel.widget.WheelView 
+				android:id="@+id/hour" 
+				android:layout_height="82dp" 
+				
+				android:layout_width="wrap_content" />
+			<kankan.wheel.widget.WheelView 
+				android:text="TextView" 
+				android:layout_gravity="right" 
+				android:layout_height="82dp" 
+				android:id="@+id/mins" 
+				android:layout_width="wrap_content" />
+			<kankan.wheel.widget.WheelView 
+				android:id="@+id/ampm" 
+				android:layout_height="82dp" 
+				android:layout_width="wrap_content"  />
+			<kankan.wheel.widget.WheelView 
+				android:id="@+id/wheelView2" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" />
+			<kankan.wheel.widget.WheelView 
+				android:id="@+id/wheelView3" android:layout_width="wrap_content" android:layout_height="wrap_content"></kankan.wheel.widget.WheelView>
+			<kankan.wheel.widget.WheelView android:id="@+id/wheelView4" android:layout_width="wrap_content" android:layout_height="wrap_content"></kankan.wheel.widget.WheelView>
+		</LinearLayout>
+			
+    
+   </RelativeLayout>
