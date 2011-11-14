@@ -77,12 +77,14 @@ public abstract class AbstractWheelTextAdapter extends AbstractWheelAdapter {
         this(context, itemResource, NO_RESOURCE);
     }
     
+       
+    
     /**
      * Constructor
      * @param context the current context
      * @param itemResource the resource ID for a layout file containing a TextView to use when instantiating items views
      * @param itemTextResource the resource ID for a text view in the item layout
-     */
+     */   
     protected AbstractWheelTextAdapter(Context context, int itemResource, int itemTextResource) {
         this.context = context;
         itemResourceId = itemResource;
@@ -90,6 +92,7 @@ public abstract class AbstractWheelTextAdapter extends AbstractWheelAdapter {
         
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
+    
     
     /**
      * Gets text color
