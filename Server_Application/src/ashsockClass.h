@@ -230,7 +230,8 @@ socketPort::~socketPort() {
 | Wait client waits for a client to connect to the server and returns a sockFD |
 | that connects to the client. This file descripter can be used in waitData    |
 \******************************************************************************/
-socketLink socketPort::waitClient(){
+socketLink socketPort::waitClient()
+{
   int clientSockFD;
   socklen_t sin_size;
   struct sockaddr_storage their_addr;
@@ -238,10 +239,12 @@ socketLink socketPort::waitClient(){
   socketLink link;
   std::string linkIP;
   std::string linkPORT;
-  while(1) {
+  while(1)
+  {
     sin_size = sizeof their_addr;
     clientSockFD = accept(_fd, (struct sockaddr *)&their_addr, &sin_size);
-    if (clientSockFD == -1) {
+    if (clientSockFD == -1)
+    {
       perror("accept");
       continue;
     }
@@ -260,7 +263,8 @@ socketLink socketPort::waitClient(){
 | the bind port function binds itself to a specified port on the computer and  |
 | returns the file descriptor of the socket (UNIX-like os)                     |
 \******************************************************************************/
-void socketPort::bindPort (std::string port) {
+void socketPort::bindPort (std::string port)
+{
     struct addrinfo hints, *servinfo, *p;
     struct sigaction sa;
     int yes=1;

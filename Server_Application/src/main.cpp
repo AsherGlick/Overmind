@@ -18,6 +18,7 @@ using namespace std;
 
 
 void *diviceThread(void *threadid);
+void *htmlThread(void *threadid);
 
 /******************************************************************************\
 | Expand is a simple function to expand the size of a string by padding it     |
@@ -37,7 +38,7 @@ int main ()
   pthread_t divice_thread;
   pthread_create(&divice_thread, NULL, diviceThread, NULL);
   // Create Another Thread for HTML Connections
-  pthread_t html_thread
+  pthread_t html_thread;
   pthread_create(&html_thread,NULL,htmlThread,NULL);
 }
 void * htmlThread (void*)
@@ -45,8 +46,6 @@ void * htmlThread (void*)
   // HTML SOCKET INFORMATION
   // Bind Web Socket
   string rec_web_data = "";
-  int web_sockfd;
-  int clientSockFD;
   string port = "80";
   
   socketPort connectPort;
@@ -71,17 +70,17 @@ void * htmlThread (void*)
   while (true)
   {
     // wait for a good socket connection
-    if (waitSelf(clientSockFD, web_sockfd) == -1) continue;
+    socketLink connection = connectPort.waitClient();
     // fork after a client connects so the main program can handle another client
     if (!fork())
     {
       // Close the bound socket, we dont need to listen to it in the fork
-      close(web_sockfd); 
+      ///close(web_sockfd); 
       // while data is not recieved, continue waiting for data
       rec_web_data = "";
       while (rec_web_data == "")
       {
-        rec_web_data = waitData (clientSockFD);
+        rec_web_data = connection.waitData ();
       }
       // after data is received create a new html object from the data
       html newPack = html(rec_web_data);
@@ -100,7 +99,7 @@ void * htmlThread (void*)
         {
           file += part +'\n';
         }
-        int size = sendData (clientSockFD, file);
+        int size = connection.sendData (file);
         if (!size)
         {
           perror("send");
@@ -112,7 +111,7 @@ void * htmlThread (void*)
 	    else if (newPack.type == HTML_POST) {
 	      if (newPack.post[0] == 's') {
 	        cout << "SERVER LIST" << endl;
-	        while (!sendData (clientSockFD, "server1name,ip,num&server2name,ip,num&server3name,ip,num"));
+	        while (!connection.sendData ("server1name,ip,num&server2name,ip,num&server3name,ip,num"));
 	        cout << "SENT DATA" << endl;
 	      }
 	      else if (newPack.post[0] == 'p') {
@@ -128,10 +127,10 @@ void * htmlThread (void*)
 	    else {
 	      cout << "NOT POST OR GET!!!" << endl;
 	    }
-	    close(clientSockFD);
+	    ///close(clientSockFD);
 	    return 0;
 	  }
-	  close(clientSockFD);
+	  ///close(clientSockFD);
 	}
 	// End Waiting for connections
 }
@@ -143,37 +142,32 @@ void *diviceThread(void *threadid)
 {
   // Bind Divice Socket
   string rec_web_data = "";
-  int web_sockfd;
-  int clientSockFD;
   string port = "8080";
-  bindPort (web_sockfd, port); // From ashsockPP.h
+  socketPort connectPort;
+  connectPort.bindPort(port); // From ashsockPP.h
   cout << "[INFO] Bound Divice Port " << port << endl;
   // End Bind Divice Socket
   while (true)
   {
     // wait for a good socket connection, set it to clientSockFD
-    if (waitSelf(clientSockFD, web_sockfd) == -1) continue;
+    socketLink connection = connectPort.waitClient();
     // fork after a client connects so the main program can handle another client
     if (!fork())
     {
       cout << "[DIVICE]: Opened Connection on 8080" << endl;
       // Close the bound socket, we dont need to listen to it in the fork
-      close(web_sockfd);
       while (true){  
         // while data is not recieved, continue waiting for data
         rec_web_data = "";
         while (rec_web_data == "")
         {
-          rec_web_data = waitData (clientSockFD);
+          rec_web_data = connection.waitData();
         }
         cout << "[DIVICE]: Received data on divice port [" << rec_web_data << "]" << endl;
-        cout << clientSockFD << endl;
       }
-	    close(clientSockFD);
 	    cout << "[DIVICE]: Closed connection" << endl;
 	    return 0;
 	  }
-	  close(clientSockFD);
 	}
 	// End Waiting for connections
   return 0;
