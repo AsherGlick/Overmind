@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 	       cout<<"Can't read input file\n";
 		return 1;
 	}
-	//set up the room layouts
+	//set up the room layouts, soon to be replace by Database
 	vector<room> roomList;
 	string temp;
 	while(inputFile>>temp)
@@ -49,20 +49,21 @@ int main(int argc, char* argv[])
 	}
 	inputFile.close();
 	//loop forever
-	while(1)
+	while(1)	//meat of the function, should be broken up, will be done later
 	{
 		getline(cin, temp);
 		cout<<temp<<endl;
+		//exit condition
 		if (temp.compare("exit")==0)
 		{
 			break;
 		}
-
+		//returns list of all rooms
 		else if (temp.compare("viewall")==0)
 		{
 			printRooms(roomList);
 		}
-		
+		//views a particular schedule for a specific room and date
 		else if (temp.compare(0,12, "viewSchedule")==0)
 		{
 			cout<<"Viewing Schedule for room"<<endl;
@@ -99,7 +100,7 @@ int main(int argc, char* argv[])
 				}
 			}
 		}
-		
+		//reserve a room on a specific date
 		else if (temp.compare(0,7,"reserve")==0)
 		{
 			cout<<"You want to reserve a room!"<<endl;
@@ -138,7 +139,7 @@ int main(int argc, char* argv[])
 				}
 			}
 		}
-
+		//cancel the reservation for a specific room for a specific date
 		else if (temp.compare(0,9,"unreserve")==0)
 		{
 			cout<<"You want to unreserve a room!"<<endl;
