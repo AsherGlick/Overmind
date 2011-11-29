@@ -27,12 +27,13 @@
         android:layout_toLeftOf="@id/ok"
         android:layout_alignTop="@id/ok"
         android:text="Cancel" android:id="@+id/button2"/>
-    <Button 
-    	android:id="@+id/button1"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:layout_below="@+id/button2"
-    	android:layout_marginTop="76dp"
+    <Button
     	android:onClick="testPage"
-    	android:text="Scan QR Code"/>
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content" 
+    	android:id="@+id/button1" 
+    	android:text="Scan QR Code" 
+    	android:layout_below="@+id/button2" 
+    	android:layout_centerHorizontal="true" 
+    	android:layout_marginTop="53dp" />
 </RelativeLayout>
