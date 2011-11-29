@@ -1,15 +1,6 @@
 /*
-~ v3 of the Windows Client
--Receives fullscreen, left, right commands from phone
--moves powerpoint
-
-next features
--GUI
--revise part of the code to make it object oriented
-
-Notes
--our coding standard wants the comments of functions before the function. We didn't address anything about parts of the main function.
-I feel like comments are needed in the main function right now.
+ * OS_Client.
+ * Compile with -L"C:\Program Files\Microsoft SDKs\Windows\v7.1\Lib" and -lw2_32
 */
 
 //Required to compile. Deals with certain SOCKET functions.
@@ -20,34 +11,29 @@ I feel like comments are needed in the main function right now.
 #include <ws2tcpip.h>
 #include <stdlib.h>
 #include <iostream>
+#include <fstream>
+#include <string>
+#include "PowerPointApp.h"
 
-//using namespace std;
-
-// full_screen replicates the F5 key being hit.
-void full_screen()
-{
-	keybd_event(VK_F5, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
-	keybd_event(VK_F5, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
-}
-
-// move_backward replicates the left arrow being hit.
-void move_backward()
-{
-	keybd_event(VK_LEFT, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
-	keybd_event(VK_LEFT, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
-}
-
-// move_forward replicate the right arrow being hit
-void move_forward()
-{
-	keybd_event(VK_RIGHT, 0x45, KEYEVENTF_EXTENDEDKEY | 0, 0);
-	keybd_event(VK_RIGHT, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
-}
-
+using namespace std;
+/*
+ * main
+ * starts the OS client on the background.
+ * Due to the length of the main function, there will be comments within the function.
+ */
 int main(void)
 {
 	//Initialization of variables.
-	char port[256] = "8080";
+	char port[256];
+	
+	ifstream config;
+	config.open("config.txt");
+	char in[256] = "8080";
+	if(config.is_open() && !config.eof())
+		config >> in;
+	cout << in << endl;
+	strcpy(port, in);
+	config.close();
 	
 	WSADATA wsaData;
 	//int test;
@@ -66,7 +52,7 @@ int main(void)
 	//if(test != 0)
 	if (WSAStartup(MAKEWORD(2,2), &wsaData))
 	{
-		std::cerr << "WSAStartup failed" << std::endl;
+		cerr << "WSAStartup failed" << endl;
 		return 1;
 	}
 	
@@ -81,7 +67,7 @@ int main(void)
 	//if (test != 0)
 	if (getaddrinfo(NULL, port, &serverS, &listenS))
 	{
-		std::cerr << "getaddrinfo failed" << std::endl;
+		cerr << "getaddrinfo failed" << endl;
 		WSACleanup();
 		return 1;
 	}
@@ -90,7 +76,7 @@ int main(void)
 	ListenSocket = socket(listenS->ai_family, listenS->ai_socktype, listenS->ai_protocol);
 	if (ListenSocket == INVALID_SOCKET)
 	{
-		std::cerr << "socket creation failed: " << WSAGetLastError() << std::endl;
+		cerr << "socket creation failed: " << WSAGetLastError() << endl;
 		freeaddrinfo(listenS);
 		WSACleanup();
 		return 1;
@@ -101,7 +87,7 @@ int main(void)
 	//if (test = SOCKET_ERROR)
 	if (bind(ListenSocket, listenS->ai_addr, (int)listenS->ai_addrlen))
 	{
-		std::cerr << "bind error: " << WSAGetLastError() << std::endl;
+		cerr << "bind error: " << WSAGetLastError() << endl;
 		freeaddrinfo(listenS);
 		closesocket(ListenSocket);
 		WSACleanup();
@@ -114,7 +100,7 @@ int main(void)
 	int test = listen(ListenSocket, SOMAXCONN);
 	if (test == SOCKET_ERROR)
 	{
-		std::cerr << "listen failed: " << WSAGetLastError() << std::endl;
+		cerr << "listen failed: " << WSAGetLastError() << endl;
 		closesocket(ListenSocket);
 		WSACleanup();
 		return 1;
@@ -124,7 +110,7 @@ int main(void)
 	ClientSocket = accept(ListenSocket, NULL, NULL);
 	if (ClientSocket == INVALID_SOCKET)
 	{
-		std::cerr << "accept failed: " << WSAGetLastError() << std::endl;
+		cerr << "accept failed: " << WSAGetLastError() << endl;
 		closesocket(ListenSocket);
 		WSACleanup();
 		return 1;
@@ -132,32 +118,22 @@ int main(void)
 	closesocket(ListenSocket);
 	
 	// Keep doing the commands the phone sends.
+	Application* app = new PowerPointApp();
 	int received = 1;
 	do
 	{
 		received = recv(ClientSocket, buffer, buffer_len, 0);
 		if (received > 0)
 		{
-			if (!strcmp(buffer, "FULLSCREEN"))
-			{
-				full_screen();
-			}
-			else if (!strcmp(buffer, "RIGHT"))
-			{
-				move_forward();
-			}
-			else if(!strcmp(buffer, "LEFT"))
-			{
-				move_backward();
-			}
+			app->action(buffer);
 		}
 		else if(received == 0)
 		{
-			std::cout << "Connection closed." << std::endl;
+			cout << "Connection closed." << endl;
 		}
 		else
 		{
-			std::cerr << "recv failed: " << WSAGetLastError() << std::endl;
+			cerr << "recv failed: " << WSAGetLastError() << endl;
 			closesocket(ClientSocket);
 			WSACleanup();
 			return 1;
@@ -168,7 +144,7 @@ int main(void)
 	// Close socket
 	if (shutdown(ClientSocket, SD_SEND) == SOCKET_ERROR)
 	{
-		std::cerr << "shutdown failed: " << WSAGetLastError() << std::endl;
+		cerr << "shutdown failed: " << WSAGetLastError() << endl;
 		closesocket(ClientSocket);
 		WSACleanup();
 		return 1;
