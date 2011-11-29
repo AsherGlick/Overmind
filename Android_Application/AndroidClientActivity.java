@@ -2,6 +2,9 @@ package overmind.androidapp;
 
 import android.app.Activity;
 import android.os.Bundle;
+//import android.view.View;
+import android.widget.Toast;
+//import android.widget.RadioButton;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -35,6 +38,7 @@ public class AndroidClientActivity extends Activity {
         Toast.makeText(this, "Attempting to connect to server", Toast.LENGTH_LONG).show();
         text = (EditText) findViewById(R.id.editText1);
         text.setText("eeyup");
+        try{
         button1 = (Button) findViewById(R.id.button1);
         button1.setOnClickListener(new OnClickListener() 
         {
@@ -58,6 +62,11 @@ public class AndroidClientActivity extends Activity {
             char ack = fromServer.readChar();
             Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show();
             text.setText(ack);
+        }
+        catch(IOException ex)
+        {
+        	Toast.makeText(this, "Failed ", Toast.LENGTH_LONG).show();
+        	Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
         }
         catch(IOException ex)
         {
