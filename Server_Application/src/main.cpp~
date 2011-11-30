@@ -32,8 +32,6 @@ static void getRoomSchedule(char* roomid, PGresult *res, PGconn *conn, socketLin
 static void getRoomScheduleDate(char* roomid, char* date, PGresult *res, PGconn *conn, socketLink connection);
 static void getRoomScheduleDate(char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection);
 static void getUserSchedule(char* userid, PGresult *res, PGconn *conn, socketLink connection);
-static void reserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection);
-static void unreserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection);
 static void exit_nicely(PGconn *conn);
 /*void *htmlThread(void *threadid);*/
 
@@ -429,42 +427,6 @@ static void getUserSchedule(char* userid, PGresult *res, PGconn *conn, socketLin
 		//Replace with code to send to phone.
 		printf("%s\n", temp0);
 	}
-	PQclear(res);
-}
-
-static void reserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection)
-{
-	char* temp = "INSERT INTO reservation($1, $2, $3, $4);";
-	const char* paramValues[4];
-	paramValues[0] = userid;
-	paramValues[1] = roomid;
-	paramValues[2] = start;
-	paramValues[3] = end;
-	int paramFormat[4];
-	paramFormat[0] = 0;
-	paramFormat[1] = 0;
-	paramFormat[2] = 0;
-	paramFormat[3] = 0;
-	res = PQexecParams(conn, temp, 1, NULL, paramValues, NULL, paramFormat, 0);
-	
-	PQclear(res);
-}
-
-static void unreserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection)
-{
-	char* temp = "DELETE FROM reservation WHERE reservation.user_id = $1 AND reservation.room_id = $2 AND reservation.reserve_start = $3 AND reservation.reserve_ned = $4;";
-	const char* paramValues[4];
-	paramValues[0] = userid;
-	paramValues[1] = roomid;
-	paramValues[2] = start;
-	paramValues[3] = end;
-	int paramFormat[4];
-	paramFormat[0] = 0;
-	paramFormat[1] = 0;
-	paramFormat[2] = 0;
-	paramFormat[3] = 0;
-	res = PQexecParams(conn, temp, 1, NULL, paramValues, NULL, paramFormat, 0);
-	
 	PQclear(res);
 }
 
