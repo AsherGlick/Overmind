@@ -71,6 +71,45 @@ public class DemoActivity extends Activity {
   		extraData = contents;
   		String outputMessage = "Connecting to " + ipAddress + ":" + port;
   		Toast.makeText(this, outputMessage, Toast.LENGTH_LONG).show();
+  		try
+        {	
+        	createConnection(ipAddress,port);
+            Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show();
+        }
+        catch(IOException ex)
+        {
+        	Toast.makeText(this, "Failed ", Toast.LENGTH_LONG).show();
+        	Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
+        	return;
+        }	
+    	catch(Exception ex)
+    	{
+    		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
+    		return;
+    	}
+  		// send version number as message
+  		sendData("VER"+1+"VER");
+  		// send extraData as message
+  		sendData(extraData);
+  		// get results, call function on results
+  		
+  		// switch views
+  		
+    }
+    public void sendData(String data) {
+    	try 
+    	{
+    		toServer.writeBytes(data);
+    		toServer.flush();
+    	}
+    	catch(IOException ex)
+    	{
+    		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
+    	}
+    	catch(Exception ex)
+    	{
+    		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
+    	}
     }
     //handles the message from zxing
     @Override
@@ -121,19 +160,7 @@ public class DemoActivity extends Activity {
     //sends the message to progress slideshow left
     public void left(View view)
     {
-    	try
-    	{
-    		toServer.writeBytes("PREV");
-    		toServer.flush();
-    	}
-    	catch(IOException ex)
-    	{
-    		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
-    	}
-    	catch(Exception ex)
-    	{
-    		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
-    	}
+    	sendData("PREV");
     }
         //sends the message to progress slideshow right
     public void right(View view)
@@ -146,6 +173,10 @@ public class DemoActivity extends Activity {
     	catch(IOException ex)
     	{
     		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
+    	}
+    	catch(Exception ex)
+    	{
+    		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
     	}
     }
         //sends the message to fullscreen

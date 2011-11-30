@@ -159,7 +159,7 @@ void *diviceThread(void *threadid)
     {
       cout << "[DIVICE]: Opened Connection on " << port << endl;
       // Close the bound socket, we dont need to listen to it in the fork
-      while (true){  
+      while (connection.isOpen()){  
         // while data is not recieved, continue waiting for data
         rec_web_data = "";
         while (rec_web_data == "")

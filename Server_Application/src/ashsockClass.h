@@ -60,6 +60,8 @@ class socketLink {
     
     bool sendData (std::string output);
     std::string getIP();
+    
+    bool isOpen(){return _open;}
 };
 
 std::string socketLink::getIP() {
