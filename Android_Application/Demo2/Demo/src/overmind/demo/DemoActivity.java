@@ -50,7 +50,7 @@ public class DemoActivity extends Activity {
     	  if (scanResult != null) 
     	  {
     		  String contents = scanResult.getContents();
-    		  String qrVersion = "";
+    		  int qrVersion = 0;
     		  // sample qr code text
     		  // http://projectovermind.com/getreader#OVRMND1:128.113.140.78:80:1:sage3202
     		  int i;
@@ -61,17 +61,19 @@ public class DemoActivity extends Activity {
     		  if (contents.substring(0,6).equals("OVRMND")) {
     			  i = contents.indexOf(':');
     			  if ( i != -1 ){
-    				  qrVersion = contents.substring(6, i);	  
+    				  qrVersion = Integer.parseInt(contents.substring(6, i));	  
     			  }
     			  else {
-    				  qrVersion = "OHGODITISNOTTHERE";
+    				  Toast.makeText(this, "This is not a valid Overmind QR code", Toast.LENGTH_LONG).show();
+    				  return;
     			  }
     		  }
     		  else {
-    			  qrVersion = "not OVRMND?, instead " + contents.substring(0,6);
+    			  Toast.makeText(this, "This is not a valid Overmind QR code", Toast.LENGTH_LONG).show();
+    			  return;
     			  //program crashes
     		  }
-    		  contents = "QR Version" + qrVersion ;
+    		  contents = "QR Version: " + qrVersion ;
     		  Toast.makeText(this, contents, Toast.LENGTH_LONG).show();
     	  }
     	  else
