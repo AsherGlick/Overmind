@@ -27,11 +27,11 @@ using namespace std;
 
 
 void *deviceThread(void *threadid);
-static void parseString(char* temp, char* temp0, socketLink connection);
-static void getRoomSchedule(char* roomid, PGresult *res, PGconn *conn, socketLink connection);
-static void getRoomScheduleDate(char* roomid, char* date, PGresult *res, PGconn *conn, socketLink connection);
-static void getRoomScheduleDate(char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection);
-static void getUserSchedule(char* userid, PGresult *res, PGconn *conn, socketLink connection);
+static void parseString(char* temp, char* temp0);
+static void getRoomSchedule(char* roomid, PGresult *res, PGconn *conn);
+static void getRoomScheduleDate(char* roomid, char* date, PGresult *res, PGconn *conn);
+static void getRoomScheduleDate(char* roomid, char* start, char* end, PGresult *res, PGconn *conn);
+static void getUserSchedule(char* userid, PGresult *res, PGconn *conn);
 static void exit_nicely(PGconn *conn);
 /*void *htmlThread(void *threadid);*/
 
@@ -251,37 +251,19 @@ void *deviceThread(void *threadid)
         {
         	if(rec_web_data.compare(0,6,"ROOMSCH")==0)	//I WANT THE ENTIRE ROOM SCHEDULE FROM NOW TO FOREVER
         	{
-        		getRoomSchedule(roomid.c_str(), res, conn, connection);
+        		getRoomSchedule(roomid, res, conn, connection);
         	}
         	else if(rec_web_data.compare(0,6,"ROOMDTE")==0)	//I WANT THE ROOM SCHEDULE FOR JUST THIS DATE PLZ
         	{
         		//parse
-        		char* temp;
-        		char* pch;
-        		char* date[2];
-        		strcpy(temp, rec_web_data.c_str());
-        		pch = strtok(temp, ":");
-        		for(int i=0; i<2; i++)
-        		{
-				date[i] = pch;
-				pch = strtok (NULL, ": ");
-			}
+        		
         		//send request
-        		getRoomScheduleDate(roomid.c_str(), date[1], res, conn, connection);
+        		
         	}
         	else if(rec_web_data.compare(0,6,"RESERVE")==0)	//I WANT TO RESERVE A ROOM
         	{
         		//parse
-        		char* temp;
-        		char* pch;
-        		char* date[3];
-        		strcpy(temp, rec_web_data.c_str());
-        		pch = strtok(temp, ":");
-        		for(int i=0; i<3; i++)
-        		{
-				date[i] = pch;
-				pch = strtok (NULL, ": ");
-			}
+        		
         		//send request
         		
         	}
@@ -298,7 +280,7 @@ void *deviceThread(void *threadid)
         }
         
       }
-      	    PQfinish(conn);
+      	    exit_nicely(conn);
 	    cout << "[DEVICE]: Closed connection" << endl;
 	    return 0;
 	  }

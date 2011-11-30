@@ -245,10 +245,13 @@ public class DemoActivity extends Activity {
     		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
     	}
     }
-    
-    public void getScheduleByRoom(String roomid)
+    //Sends the message to get the full room schedule
+    public void getScheduleByRoom()
     {
-    	String temp="ROOMSCH"+roomid;
+    	//construct the message to send
+    	String temp="ROOMSCH";
+    	String[] recievedMessage;
+    	//send message
     	try
     	{
     		toServer.writeBytes(temp);
@@ -258,58 +261,161 @@ public class DemoActivity extends Activity {
     	{
     		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
     	}
-    }
-    
-    public void getScheudleByDate(String roomid, String date)
-    {
+    	//receive message
+    	//message is formatted as such roomid,yy-mm-dd hh-mm-ss,yy-mm-dd hh-mm-ss
+    	//room_id, time_start, time_end
     	try
     	{
-    		toServer.writeBytes("");
+    		while(true)
+    		{
+    			temp = fromServer.readLine();
+    			//parse this and store in schedules list
+    			recievedMessage = temp.split(",");
+    			schedules.add(new Schedule(recievedMessage[0], recievedMessage[1], recievedMessage[2]));
+    		}
+    	}
+    	catch(IOException e)
+    	{		
+    		printSchedules();
+    	}
+    }
+    //Sends the message to get the room schedule from a particular date
+    public void getScheudleByDate(String date)
+    {
+    	//construct the message to send
+    	String temp="ROOMDTE:"+ date;
+    	String[] recievedMessage;
+    	//send message
+    	try
+    	{
+    		toServer.writeBytes(temp);
     		toServer.flush();
     	}
     	catch(IOException ex)
     	{
     		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
     	}
-    }
-    
-    public void getMySchedules(String userid)
-    {
+    	//receive message
     	try
     	{
-    		toServer.writeBytes("");
+    		while(true)
+    		{
+    			temp = fromServer.readLine();
+    			recievedMessage = temp.split(",");
+    			schedules.add(new Schedule(recievedMessage[0], recievedMessage[1], recievedMessage[2]));
+    		}
+    	}
+    	catch(IOException e)
+    	{
+    		printSchedules();
+    	}
+    }
+    //Sends the message to the the room schedule for this user
+    public void getMySchedules()
+    {
+    	//construct the message to send
+    	String temp="MYSCH";
+    	String[] recievedMessage;
+    	//send message
+    	try
+    	{
+    		toServer.writeBytes(temp);
     		toServer.flush();
     	}
     	catch(IOException ex)
     	{
     		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
     	}
-    }
-    
-    public void reserveRoom(String roomid, String userid, String timeStart, String timeEnd)
-    {
+    	//receive message
     	try
     	{
-    		toServer.writeBytes("");
+    		while(true)
+    		{
+    			temp = fromServer.readLine();
+    			recievedMessage = temp.split(",");
+    			schedules.add(new Schedule(recievedMessage[0], recievedMessage[1], recievedMessage[2]));
+    		}
+    	}
+    	catch(IOException e)
+    	{
+    		printSchedules();
+    	}
+    }
+    //sends the message to reserve a room R
+    public void reserveRoom(String timeStart, String timeEnd)
+    {
+    	String temp="RESERVE:"+ timeStart + ":" + timeEnd;
+    	String recievedMessage[];
+    	try
+    	{
+    		toServer.writeBytes(temp);
     		toServer.flush();
     	}
     	catch(IOException ex)
     	{
     		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
     	}
-    }
-    
-    public void deleteReservation(String roomid, String userid, String timeStart, String timeEnd)
-    {
     	try
     	{
-    		toServer.writeBytes("");
+    		while(true)
+    		{
+    			temp = fromServer.readLine();
+    			//parse this for pass/fail
+    			recievedMessage = temp.split(",");
+    			if(recievedMessage[0].compareTo("Win")==0)
+    			{
+    				Toast.makeText(this, "Congratulations, Reservation made", Toast.LENGTH_LONG).show();
+    			}
+    			else if(recievedMessage[0].compareTo("Fail")==0)
+    			{
+    				Toast.makeText(this, "Sorry, something went wrong", Toast.LENGTH_LONG).show();
+    				Toast.makeText(this, temp, Toast.LENGTH_LONG).show();
+    			}
+    			else
+    			{
+    				Toast.makeText(this, temp, Toast.LENGTH_LONG).show();
+    			}
+    		}
+    	}
+    	catch(IOException e){}
+    }
+    //sends a message to un-reserve a room
+    public void deleteReservation(String timeStart, String timeEnd)
+    {
+    	String temp="DELETE:"+ timeStart + ":" + timeEnd;
+    	String recievedMessage[];
+    	try
+    	{
+    		toServer.writeBytes(temp);
     		toServer.flush();
     	}
     	catch(IOException ex)
     	{
     		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
     	}
+    	try
+    	{
+    		while(true)
+    		{
+    			temp = fromServer.readLine();
+    			//parse this for pass/fail
+    			recievedMessage = temp.split(",");
+    			if(recievedMessage[0].compareTo("Win")==0)
+    			{
+    				Toast.makeText(this, "Congratulations, Reservation canceled", Toast.LENGTH_LONG).show();
+    			}
+    			else if(recievedMessage[0].compareTo("Fail")==0)
+    			{
+    				Toast.makeText(this, "Sorry, something went wrong", Toast.LENGTH_LONG).show();
+    				Toast.makeText(this, temp, Toast.LENGTH_LONG).show();
+    			}
+    			else
+    			{
+    				Toast.makeText(this, temp, Toast.LENGTH_LONG).show();
+    			}
+    		}
+    	}
+    	catch(IOException e){}
     }
     
 }
