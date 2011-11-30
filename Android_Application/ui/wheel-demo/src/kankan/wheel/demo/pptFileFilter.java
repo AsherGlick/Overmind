@@ -9,7 +9,7 @@ class pptFileFilter implements FileFilter {
 
 	    if (pathname.getName().endsWith(".ppt"))
 	      return true;
-	    if (pathname.getName().endsWith(".mp3"))
+	    if (pathname.getName().endsWith(".pptx"))
 	      return true;
 	    return false;
 	  }

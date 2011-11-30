@@ -65,7 +65,9 @@ public class FilePickerActivity extends ListActivity {
     public void fillListAndroid(View v)
     {
     	combinedList.clear();
-    	combinedList.addAll(sdPowerpoints);
+    	//combinedList.addAll(sdPowerpoints);
+    	String d = ((Environment.getExternalStorageDirectory().toString() ) + "/Download");
+    	combinedList.addAll( (new SDReader(d)).returnFiles() );
     	fileList.notifyDataSetChanged();
     	
     	return;    	
