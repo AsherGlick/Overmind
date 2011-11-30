@@ -17,7 +17,7 @@ using namespace std;
 #define DEFAULTWEBPATH "./web"
 
 
-void *diviceThread(void *threadid);
+void *di\eviceThread(void *threadid);
 /*void *htmlThread(void *threadid);*/
 
 /******************************************************************************\
@@ -36,8 +36,8 @@ int main ()
 {
   cout << "program starting" << endl;
   // Create Another Thread for handeling Android Connections
-  pthread_t divice_thread;
-  pthread_create(&divice_thread, NULL, diviceThread, NULL);
+  pthread_t device_thread;
+  pthread_create(&device_thread, NULL, deviceThread, NULL);
   /*// Create Another Thread for HTML Connections
   pthread_t html_thread;
   pthread_create(&html_thread,NULL,htmlThread,NULL);*/
@@ -138,18 +138,18 @@ void * htmlThread (void*)
 	// End Waiting for connections
 }*/
 
-/******************************** DIVICE THREAD *******************************\
-| A thread function to handle the connections from the android divices
+/******************************** DEVICE THREAD *******************************\
+| A thread function to handle the connections from the android devices
 \******************************************************************************/
-void *diviceThread(void *threadid)
+void *deviceThread(void *threadid)
 {
-  // Bind Divice Socket
+  // Bind Device Socket
   string rec_web_data = "";
   string port = "80";
   socketPort connectPort;
   connectPort.bindPort(port); // From ashsockPP.h
-  cout << "[INFO] Bound Divice Port " << port << endl;
-  // End Bind Divice Socket
+  cout << "[INFO] Bound Device Port " << port << endl;
+  // End Bind Device Socket
   while (true)
   {
     // wait for a good socket connection, set it to clientSockFD
@@ -157,18 +157,21 @@ void *diviceThread(void *threadid)
     // fork after a client connects so the main program can handle another client
     if (!fork())
     {
-      cout << "[DIVICE]: Opened Connection on " << port << endl;
+      cout << "[DEVICE]: Opened Connection on " << port << endl;
       // Close the bound socket, we dont need to listen to it in the fork
       while (connection.isOpen()){  
         // while data is not recieved, continue waiting for data
         rec_web_data = "";
+        //int count = 0;
         while (rec_web_data == "")
         {
+          //cout << "\r" << count;
+          //dcount ++;
           rec_web_data = connection.waitData();
         }
-        cout << "[DIVICE]: Received data on divice port [" << rec_web_data << "]" << endl;
+        cout << "[DEVICE]: Received data on device port [" << rec_web_data << "]" << endl;
       }
-	    cout << "[DIVICE]: Closed connection" << endl;
+	    cout << "[DEVICE]: Closed connection" << endl;
 	    return 0;
 	  }
 	}
