@@ -43,6 +43,10 @@ public class DemoActivity extends Activity {
     	IntentIntegrator integrator = new IntentIntegrator(DemoActivity.this);
     	integrator.initiateScan(IntentIntegrator.QR_CODE_TYPES);
     }
+    // this function parses and handles the first version of the QR code
+    public void parseQRVersionOne(String contents) {
+    	
+    }
     //handles the message from zxing
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -61,7 +65,16 @@ public class DemoActivity extends Activity {
     		  if (contents.substring(0,6).equals("OVRMND")) {
     			  i = contents.indexOf(':');
     			  if ( i != -1 ){
-    				  qrVersion = Integer.parseInt(contents.substring(6, i));	  
+    				  qrVersion = Integer.parseInt(contents.substring(6, i));
+    				  contents = contents.substring(i+1);
+    				  switch (qrVersion) {
+    				  case 1:
+    					  parseQRVersionOne(contents);
+    					  return;
+    				  default:
+    					  Toast.makeText(this, "This QR Code is a newer version then this application can handle", Toast.LENGTH_LONG).show();
+    					  return;
+    				  }
     			  }
     			  else {
     				  Toast.makeText(this, "This is not a valid Overmind QR code", Toast.LENGTH_LONG).show();
@@ -80,7 +93,7 @@ public class DemoActivity extends Activity {
     	  {
     		  Toast.makeText(this, "something went wrong there pall", Toast.LENGTH_LONG).show();
     	  }
-    	} 
+    	  } 
     //sends the message to progress slideshow left
     public void left(View view)
     {
