@@ -45,7 +45,30 @@ public class DemoActivity extends Activity {
     }
     // this function parses and handles the first version of the QR code
     public void parseQRVersionOne(String contents) {
-    	
+    	// sample qr code text
+		// http://projectovermind.com/getreader#OVRMND1:128.113.140.78:80:1:sage3202
+    	// example of code passed to the function
+    	// 128.113.140.78:80:1:sage3202
+    	String ipAddress;
+    	int port;
+    	String displayStyle;
+    	String extraData;
+    	int i = contents.indexOf(':');
+    	if (i != -1){
+    		ipAddress = contents.substring(0,i);
+    		contents = contents.substring(i+1);
+    	}
+    	i = contents.indexOf(':');
+    	if (i != -1){
+    		port = Integer.parseInt(contents.substring(0,i));
+    		contents = contents.substring(i+1);
+    	}
+    	i = contents.indexOf(':');
+    	if (i != -1){
+    		displayStyle = contents.substring(0,i);
+    		contents = contents.substring(i+1);
+    	}
+  		extraData = contents;
     }
     //handles the message from zxing
     @Override
@@ -55,8 +78,7 @@ public class DemoActivity extends Activity {
     	  {
     		  String contents = scanResult.getContents();
     		  int qrVersion = 0;
-    		  // sample qr code text
-    		  // http://projectovermind.com/getreader#OVRMND1:128.113.140.78:80:1:sage3202
+    		  
     		  int i;
     		  i = contents.indexOf('#');
     		  if ( i != -1){
@@ -86,14 +108,14 @@ public class DemoActivity extends Activity {
     			  return;
     			  //program crashes
     		  }
-    		  contents = "QR Version: " + qrVersion ;
-    		  Toast.makeText(this, contents, Toast.LENGTH_LONG).show();
+    		  //contents = "QR Version: " + qrVersion ;
+    		  //Toast.makeText(this, contents, Toast.LENGTH_LONG).show();
     	  }
     	  else
     	  {
     		  Toast.makeText(this, "something went wrong there pall", Toast.LENGTH_LONG).show();
     	  }
-    	  } 
+    } 
     //sends the message to progress slideshow left
     public void left(View view)
     {
@@ -105,6 +127,10 @@ public class DemoActivity extends Activity {
     	catch(IOException ex)
     	{
     		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
+    	}
+    	catch(Exception ex)
+    	{
+    		Toast.makeText(this,"there was another problem",Toast.LENGTH_LONG).show();
     	}
     }
         //sends the message to progress slideshow right
@@ -146,14 +172,23 @@ public class DemoActivity extends Activity {
     		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
     	}
     }
-        //sends the message to connect to specified server
+    public void createConnection (String ip, int port) throws IOException {
+    	try {
+    		socket = new Socket (ip,port);
+    		toServer = new DataOutputStream ( socket.getOutputStream() );
+    	}
+    	catch (IOException ex) {
+    		throw ex;
+    	}
+    	
+    }
+    	//sends the message to connect to specified server
     public void connect(View view)
     {
     	try
         {
     		String iptext = ip.getText().toString();	
-        	socket = new Socket( iptext, 8080 );     	
-            toServer = new DataOutputStream( socket.getOutputStream() );
+        	createConnection(iptext,8080);
             Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show();
         }
         catch(IOException ex)
