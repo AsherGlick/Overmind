@@ -13,9 +13,19 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "PowerPointApp.h"
 
 using namespace std;
+
+void* open_ppt(void* arg)
+{
+	char* name = (char*)arg;
+	execlp("C:/Program Files (x86)/Microsoft Office/Office12/POWERPNT.exe", "POWERPNT.exe", "/N", name, NULL);
+	return 0;
+}
 /*
  * main
  * starts the OS client on the background.
@@ -44,7 +54,7 @@ int main(void)
 	struct addrinfo *listenS = NULL;
 	struct addrinfo serverS;
 
-	int buffer_len = 512;
+	int buffer_len = 4096;
 	char buffer[buffer_len];
 	
 	//Initializing Winsock
@@ -125,7 +135,34 @@ int main(void)
 		received = recv(ClientSocket, buffer, buffer_len, 0);
 		if (received > 0)
 		{
-			app->action(buffer);
+			if(strncmp(buffer, "FILE", 4)==0)
+			{
+				received = recv(ClientSocket, buffer, buffer_len, 0);
+				char filename[buffer_len];
+				char filesz[buffer_len];
+				strcpy(filename, "t");
+				char* tx = strtok(buffer, "|");
+				strcat(filename, tx);
+							
+				tx = strtok(NULL, "|");
+				int filesize = atoi(tx);
+							
+				int output = open(filename, O_WRONLY | O_TRUNC | O_CREAT, 0600);
+				int cursize = 0;
+				while (cursize < filesize)
+				{
+					received = recv(ClientSocket, buffer, buffer_len, 0);
+					cursize = cursize+received;
+					write(output, buffer, received);
+				}
+				
+				pthread_t tid;
+				int rc = pthread_create(&tid, NULL, open_ppt, filename);
+			}
+			else
+			{
+				app->action(buffer);
+			}
 		}
 		else if(received == 0)
 		{
