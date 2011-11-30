@@ -122,17 +122,20 @@ public class SchedulerActivity extends Activity {
     	 //begin time wheel code
 		final WheelView hoursStart = (WheelView) findViewById(R.id.hoursStart);
 		//create time wheel listing numbers 1-12 with font size 22
-		hoursStart.setViewAdapter(new NumericWheelAdapter(this, 1, 12, 22, "%02d"));
+		hoursStart.setViewAdapter(new NumericWheelAdapter(this, 1, 12, 28, "%02d"));
 		hoursStart.setCyclic(true);
 	
 		final WheelView minsStart = (WheelView) findViewById(R.id.minsStart);
 		//create time wheel listing :00 :15 :30 :45 :00
-		ArrayWheelAdapter<String> minsStartAdapter =
-            new ArrayWheelAdapter<String>(this, new String[] {"00", "10", "20", "30", "40", "50"});
-		minsStartAdapter.setItemResource(R.layout.wheel_text_item);
-		minsStartAdapter.setItemTextResource(R.id.text);
-		minsStart.setViewAdapter(minsStartAdapter);
-	
+		//ArrayWheelAdapter<String> minsStartAdapter =
+        //    new ArrayWheelAdapter<String>(this, new String[] {"00", "10", "20", "30", "40", "50"});
+		//minsStartAdapter.setItemResource(R.layout.wheel_text_item);
+		//minsStartAdapter.setItemTextResource(R.id.text);
+		//minsStart.setViewAdapter(minsStartAdapter);
+		minsStart.setViewAdapter(new NumericWheelAdapter(this, 0, 59, 28, "%02d"));
+		minsStart.setCyclic(true);
+		
+		
         final WheelView ampmStart = (WheelView) findViewById(R.id.ampmStart);
         //create wheel listing "AM" and "PM" - (you can change font size in wheel_text_item.xml)
         ArrayWheelAdapter<String> ampmStartAdapter =
@@ -147,17 +150,18 @@ public class SchedulerActivity extends Activity {
         //begin time wheel code
 		final WheelView hoursEnd = (WheelView) findViewById(R.id.hoursEnd);
 		//create time wheel listing numbers 1-12 with font size 24
-		hoursEnd.setViewAdapter(new NumericWheelAdapter(this, 1, 12, 24, "%02d"));
+		hoursEnd.setViewAdapter(new NumericWheelAdapter(this, 1, 12, 28, "%02d"));
 		hoursEnd.setCyclic(true);
 		
 		final WheelView minsEnd = (WheelView) findViewById(R.id.minsEnd);
 		//create time wheel listing :00 :15 :30 :45 :00
-		ArrayWheelAdapter<String> minsEndAdapter =
-            new ArrayWheelAdapter<String>(this, new String[] {"00", "10", "20", "30", "40", "50"});
-		minsEndAdapter.setItemResource(R.layout.wheel_text_item);
-		minsEndAdapter.setItemTextResource(R.id.text);
-		minsEnd.setViewAdapter(minsEndAdapter);
-	
+		//ArrayWheelAdapter<String> minsEndAdapter =
+        //    new ArrayWheelAdapter<String>(this, new String[] {"00", "10", "20", "30", "40", "50"});
+		//minsEndAdapter.setItemResource(R.layout.wheel_text_item);
+		//minsEndAdapter.setItemTextResource(R.id.text);
+		minsEnd.setViewAdapter(new NumericWheelAdapter(this, 0, 59, 28, "%02d"));
+		minsEnd.setCyclic(true);
+		
         final WheelView ampmEnd = (WheelView) findViewById(R.id.ampmEnd);
         //create wheel listing "AM" and "PM" - (you can change font size in wheel_text_item.xml)
         ArrayWheelAdapter<String> ampmEndAdapter =

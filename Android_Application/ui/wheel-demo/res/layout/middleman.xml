@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/entry"
         android:layout_alignParentRight="true"
-        android:layout_marginLeft="10dip"
+        android:layout_marginLeft="10dp"
         android:text="OK" />
     <Button
         android:layout_width="wrap_content"

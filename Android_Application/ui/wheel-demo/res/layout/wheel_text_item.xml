@@ -3,7 +3,7 @@
     android:id="@+id/text"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:textSize="24dp"
+    android:textSize="28dp"
     android:lines="1"
     android:textStyle="bold"
     android:textColor="#FF111111"
