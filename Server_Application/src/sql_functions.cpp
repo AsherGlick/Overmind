@@ -133,7 +133,7 @@ static void getUser(char* userid, PGresult *res, PGconn *conn)
 	PQclear(res);
 }
 
-static void reservation(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn)
+static void reserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn)
 {
 	char* temp = "INSERT INTO reservation($1, $2, $3, $4);";
 	const char* paramValues[4];
@@ -151,7 +151,7 @@ static void reservation(char* userid, char* roomid, char* start, char* end, PGre
 	PQclear(res);
 }
 
-static void reservation(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn)
+static void unreserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn)
 {
 	char* temp = "DELETE FROM reservation WHERE reservation.user_id = $1 AND reservation.room_id = $2 AND reservation.reserve_start = $3 AND reservation.reserve_ned = $4;";
 	const char* paramValues[4];
