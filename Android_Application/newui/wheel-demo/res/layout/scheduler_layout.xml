@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <TextView
+    	android:id="@+id/textView1" 
+    	android:layout_width="wrap_content" 
+    	android:layout_height="wrap_content" 
+    	android:textColor="#82c8ff"
+    	android:textSize="16dp"
+    	android:text="When would you like to reserve the room?" 
+    	android:gravity="center_vertical|center_horizontal" 
+    	android:layout_alignParentTop="true" 
+    	android:layout_alignParentLeft="true" 
+    	android:layout_alignParentRight="true"
+    	android:layout_marginTop="4dp" />
+    <ImageButton
+    	android:id="@+id/nextDay"
+    	android:onClick="nextDay"
+    	android:layout_width="wrap_content" 
+    	android:layout_height="wrap_content" 
+    	android:src="@android:drawable/ic_media_ff" 
+    	android:layout_alignTop="@+id/prevDay" 
+    	android:layout_alignParentRight="true" 
+    	android:layout_marginRight="45dp" />
+    <ImageButton 
+    	android:id="@+id/prevDay" 
+    	android:onClick="prevDay"
+    	android:layout_width="wrap_content" 
+    	android:layout_height="wrap_content" 
+    	android:src="@android:drawable/ic_media_rew" 
+    	android:layout_below="@+id/textView1" 
+    	android:layout_alignParentLeft="true" 
+    	android:layout_marginLeft="45dp" 
+    	android:layout_marginTop="5dp" />
+    <TextView 
+    	android:id="@+id/whichDay"
+    	android:clickable="true"
+    	android:onClick="dateDialog"
+    	android:textColor="@layout/day_select_text_item"
+    	android:textAppearance="?android:attr/textAppearanceLarge" 
+    	android:layout_height="wrap_content" 
+    	android:gravity="center_vertical|center_horizontal" 
+    	android:layout_width="wrap_content" 
+    	android:text="Loading.." 
+    	android:layout_alignTop="@+id/prevDay" 
+    	android:layout_alignBottom="@+id/prevDay" 
+    	android:layout_toRightOf="@+id/prevDay" 
+    	android:layout_toLeftOf="@+id/nextDay" />
+    
+    <TextView 
+    	android:id="@+id/selectedDate" 
+    	android:layout_height="wrap_content" 
+    	android:text=""
+    	android:textColor="#82c8ff"
+    	android:layout_marginBottom="5dp"
+    	android:textAppearance="?android:attr/textAppearanceMedium" 
+    	android:layout_width="wrap_content" 
+    	android:layout_below="@+id/whichDay" 
+    	android:layout_centerHorizontal="true" />
+ 	  
+	  	
+		
+			
+    	
+    <TableLayout 
+    	android:id="@+id/tableLayout1" 
+    	android:layout_width="wrap_content" 
+    	android:layout_height="wrap_content" 
+    	android:layout_below="@+id/imageButton2" 
+    	android:layout_alignLeft="@+id/imageButton2" 
+    	android:layout_alignRight="@+id/imageButton1">
+        <TableRow 
+        	android:id="@+id/tableRow2" 
+        	android:layout_width="wrap_content" 
+        	android:layout_height="wrap_content" >
+        </TableRow>
+    </TableLayout>
+		
+		<LinearLayout android:id="@+id/startTimeLayout" android:layout_marginTop="20dp" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/selectedDate" android:layout_centerHorizontal="true">
+			<kankan.wheel.widget.WheelView 
+				android:id="@+id/hoursStart" 
+				android:layout_height="82dp" 
+				
+				android:layout_width="wrap_content" android:layout_gravity="center"/>
+			<kankan.wheel.widget.WheelView 
+				android:text="TextView" 
+				android:layout_height="82dp" 
+				android:id="@+id/minsStart" 
+				android:layout_width="wrap_content" android:layout_gravity="center"/>
+			<kankan.wheel.widget.WheelView 
+				android:id="@+id/ampmStart" 
+				android:layout_height="82dp" 
+				android:layout_width="wrap_content"  android:layout_gravity="center"/>
+		</LinearLayout>
+	
+		<TextView 
+		android:text="to" 
+			android:id="@+id/toLabel" 
+			android:layout_marginTop="12dp" 
+			android:textAppearance="?android:attr/textAppearanceMedium" 
+			android:layout_below="@+id/startTimeLayout" 
+			android:layout_centerHorizontal="true" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"  />	
+    
+	
+		<LinearLayout android:id="@+id/endTimeLayout" android:layout_marginTop="12dp" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/toLabel" android:layout_centerHorizontal="true">
+		
+		<kankan.wheel.widget.WheelView 
+			android:id="@+id/hoursEnd" 
+			android:layout_width="wrap_content" 
+			android:layout_height="82dp" />
+		<kankan.wheel.widget.WheelView 
+			android:id="@+id/minsEnd" 
+			android:layout_width="wrap_content" 
+			android:layout_height="82dp"   />
+		<kankan.wheel.widget.WheelView 
+			android:id="@+id/ampmEnd" 
+			android:layout_width="wrap_content" 
+			android:layout_height="82dp" />
+		</LinearLayout>
+		<Button 
+			android:text="Schedule" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:id="@+id/scheduleButton" 
+			android:layout_below="@+id/endTimeLayout" 
+			android:layout_centerHorizontal="true"
+			android:textSize="26dp" 
+			android:layout_marginTop="36dp" />
+	
+   </RelativeLayout>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="kankan.wheel.demo"
+      android:versionCode="1"
+      android:versionName="1.0">
+      
+    <application android:icon="@drawable/wheel" android:label="WheelDemo">
+
+		<activity android:name="kankan.wheel.demo.WheelDemo" android:screenOrientation="portrait">
+		    <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+		</activity>
+		<activity android:name="kankan.wheel.demo.LoginActivity" android:screenOrientation="portrait" android:label="Login Screen">
+		    <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="kankan.wheel.WHEEL_SAMPLE"/>
+            </intent-filter>
+		</activity>
+        <activity android:name="kankan.wheel.demo.FilePickerActivity" android:screenOrientation="portrait" android:label="Show a Presentation">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="kankan.wheel.WHEEL_SAMPLE"/>
+            </intent-filter>
+        </activity>
+		<activity android:name="kankan.wheel.demo.SchedulerActivity" android:screenOrientation="portrait" android:label="Schedule a Room">
+		    <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="kankan.wheel.WHEEL_SAMPLE"/>
+            </intent-filter>
+		</activity>
+    </application>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+</manifest> 
