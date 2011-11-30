@@ -130,7 +130,7 @@ public class DemoActivity extends Activity {
     	}
     	catch(Exception ex)
     	{
-    		Toast.makeText(this,"there was another problem",Toast.LENGTH_LONG).show();
+    		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
     	}
     }
         //sends the message to progress slideshow right
