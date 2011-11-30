@@ -18,7 +18,7 @@ using namespace std;
 
 
 void *diviceThread(void *threadid);
-void *htmlThread(void *threadid);
+/*void *htmlThread(void *threadid);*/
 
 /******************************************************************************\
 | Expand is a simple function to expand the size of a string by padding it     |
@@ -34,13 +34,16 @@ string expand(string data, int size) {
 
 int main ()
 {
+  cout << "program starting" << endl;
   // Create Another Thread for handeling Android Connections
   pthread_t divice_thread;
   pthread_create(&divice_thread, NULL, diviceThread, NULL);
-  // Create Another Thread for HTML Connections
+  /*// Create Another Thread for HTML Connections
   pthread_t html_thread;
-  pthread_create(&html_thread,NULL,htmlThread,NULL);
+  pthread_create(&html_thread,NULL,htmlThread,NULL);*/
+  while(true);
 }
+/*
 void * htmlThread (void*)
 {
   // HTML SOCKET INFORMATION
@@ -133,7 +136,7 @@ void * htmlThread (void*)
 	  ///close(clientSockFD);
 	}
 	// End Waiting for connections
-}
+}*/
 
 /******************************** DIVICE THREAD *******************************\
 | A thread function to handle the connections from the android divices
@@ -142,7 +145,7 @@ void *diviceThread(void *threadid)
 {
   // Bind Divice Socket
   string rec_web_data = "";
-  string port = "8080";
+  string port = "80";
   socketPort connectPort;
   connectPort.bindPort(port); // From ashsockPP.h
   cout << "[INFO] Bound Divice Port " << port << endl;
@@ -154,7 +157,7 @@ void *diviceThread(void *threadid)
     // fork after a client connects so the main program can handle another client
     if (!fork())
     {
-      cout << "[DIVICE]: Opened Connection on 8080" << endl;
+      cout << "[DIVICE]: Opened Connection on " << port << endl;
       // Close the bound socket, we dont need to listen to it in the fork
       while (true){  
         // while data is not recieved, continue waiting for data

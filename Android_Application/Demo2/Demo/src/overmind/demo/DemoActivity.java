@@ -50,6 +50,28 @@ public class DemoActivity extends Activity {
     	  if (scanResult != null) 
     	  {
     		  String contents = scanResult.getContents();
+    		  String qrVersion = "";
+    		  // sample qr code text
+    		  // http://projectovermind.com/getreader#OVRMND1:128.113.140.78:80:1:sage3202
+    		  int i;
+    		  i = contents.indexOf('#');
+    		  if ( i != -1){
+    			  contents = contents.substring(i+1);
+    		  }
+    		  if (contents.substring(0,6).equals("OVRMND")) {
+    			  i = contents.indexOf(':');
+    			  if ( i != -1 ){
+    				  qrVersion = contents.substring(6, i);	  
+    			  }
+    			  else {
+    				  qrVersion = "OHGODITISNOTTHERE";
+    			  }
+    		  }
+    		  else {
+    			  qrVersion = "not OVRMND?, instead " + contents.substring(0,6);
+    			  //program crashes
+    		  }
+    		  contents = "QR Version" + qrVersion ;
     		  Toast.makeText(this, contents, Toast.LENGTH_LONG).show();
     	  }
     	  else
@@ -114,7 +136,7 @@ public class DemoActivity extends Activity {
     {
     	try
         {
-    		String iptext = ip.getText().toString();
+    		String iptext = ip.getText().toString();	
         	socket = new Socket( iptext, 8080 );     	
             toServer = new DataOutputStream( socket.getOutputStream() );
             Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show();
