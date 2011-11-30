@@ -49,10 +49,10 @@ public class DemoActivity extends Activity {
 		// http://projectovermind.com/getreader#OVRMND1:128.113.140.78:80:1:sage3202
     	// example of code passed to the function
     	// 128.113.140.78:80:1:sage3202
-    	String ipAddress;
-    	int port;
-    	String displayStyle;
-    	String extraData;
+    	String ipAddress = "0.0.0.0";
+    	int port = 0;
+    	String displayStyle = "0";
+    	String extraData = "";
     	int i = contents.indexOf(':');
     	if (i != -1){
     		ipAddress = contents.substring(0,i);
@@ -69,6 +69,8 @@ public class DemoActivity extends Activity {
     		contents = contents.substring(i+1);
     	}
   		extraData = contents;
+  		String outputMessage = "Connecting to " + ipAddress + ":" + port;
+  		Toast.makeText(this, outputMessage, Toast.LENGTH_LONG).show();
     }
     //handles the message from zxing
     @Override
@@ -158,6 +160,10 @@ public class DemoActivity extends Activity {
     	{
     		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
     	}
+    	catch(Exception ex)
+    	{
+    		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
+    	}
     }
         //sends the message to close slideshow
     public void close(View view)
@@ -171,6 +177,10 @@ public class DemoActivity extends Activity {
     	{
     		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
     	}
+    	catch(Exception ex)
+    	{
+    		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
+    	}
     }
     public void createConnection (String ip, int port) throws IOException {
     	try {
@@ -180,7 +190,10 @@ public class DemoActivity extends Activity {
     	catch (IOException ex) {
     		throw ex;
     	}
-    	
+    	catch(Exception ex)
+    	{
+    		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
+    	}
     }
     	//sends the message to connect to specified server
     public void connect(View view)
@@ -196,6 +209,10 @@ public class DemoActivity extends Activity {
         	Toast.makeText(this, "Failed ", Toast.LENGTH_LONG).show();
         	Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
         }	
+    	catch(Exception ex)
+    	{
+    		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
+    	}
     }
     
     public void getScheduleByRoom(String roomid)
