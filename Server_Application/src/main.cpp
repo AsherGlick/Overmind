@@ -285,13 +285,23 @@ void *deviceThread(void *threadid)
 				pch = strtok (NULL, ": ");
 			}
         		//send request
-        		
+        		reserve(username.c_str(), roomid.c_str(), date[1], date[2], res, conn, connection);
         	}
         	else if(rec_web_data.compare(0,5,"DELETE")==0)	//I WANT TO DELETE A RESERVATION
         	{
         		//parse
-        		
+        		char* temp;
+        		char* pch;
+        		char* date[3];
+        		strcpy(temp, rec_web_data.c_str());
+        		pch = strtok(temp, ":");
+        		for(int i=0; i<3; i++)
+        		{
+				date[i] = pch;
+				pch = strtok (NULL, ": ");
+			}
         		//send request
+        		unreserve(username.c_str(), roomid.c_str(), date[1], date[2], res, conn, connection)
         	}
         	else if(rec_web_data.compare(0,4,"GETIP")==0)	//GIVE ME THE IP TO THE COMPUTER RAWR
         	{
@@ -338,13 +348,16 @@ static void getRoomSchedule(char* roomid, PGresult *res, PGconn *conn, socketLin
 	{
 		char* row;
 		char temp0[256] = "";
-		
+
 		row = PQgetvalue(res, i, 0);
 		parseString(row, temp0);
-		
+		string message(temp0);
 		//Replace with code to send to phone.
-		printf("%s\n", temp0);
+		connection.send(message);
+		//printf("%s\n", temp0);
 	}
+	string message("Done");
+	connection.send(message);
 	PQclear(res);
 }
 
@@ -369,10 +382,13 @@ static void getRoomScheduleDate(char* roomid, char* date, PGresult *res, PGconn 
 		
 		row = PQgetvalue(res, i, 0);
 		parseString(row, temp0);
-		
+		string message(temp0);
 		//Replace with code to send to phone.
-		printf("%s\n", temp0);
+		connection.send(message);
+		//printf("%s\n", temp0);
 	}
+	string message("Done");
+	connection.send(message);
 	PQclear(res);
 }
 
@@ -399,10 +415,13 @@ static void getRoomScheduleDate(char* roomid, char* start, char* end, PGresult *
 		
 		row = PQgetvalue(res, i, 0);
 		parseString(row, temp0);
-		
+		string message(temp0);
 		//Replace with code to send to phone.
-		printf("%s\n", temp0);
+		connection.send(message);
+		//printf("%s\n", temp0);
 	}
+	string message("Done");
+	connection.send(message);
 	PQclear(res);
 }
 
@@ -425,10 +444,13 @@ static void getUserSchedule(char* userid, PGresult *res, PGconn *conn, socketLin
 		
 		row = PQgetvalue(res, i, 0);
 		parseString(row, temp0);
-		
+		string message(temp0);
 		//Replace with code to send to phone.
-		printf("%s\n", temp0);
+		connection.send(message);
+		//printf("%s\n", temp0);
 	}
+	string message("Done");
+	connection.send(message);
 	PQclear(res);
 }
 
@@ -448,6 +470,8 @@ static void reserve(char* userid, char* roomid, char* start, char* end, PGresult
 	res = PQexecParams(conn, temp, 1, NULL, paramValues, NULL, paramFormat, 0);
 	
 	PQclear(res);
+	
+	
 }
 
 static void unreserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection)
@@ -464,8 +488,10 @@ static void unreserve(char* userid, char* roomid, char* start, char* end, PGresu
 	paramFormat[2] = 0;
 	paramFormat[3] = 0;
 	res = PQexecParams(conn, temp, 1, NULL, paramValues, NULL, paramFormat, 0);
-	
+
 	PQclear(res);
+	
+	
 }
 
 // Quits the connection to the database.
