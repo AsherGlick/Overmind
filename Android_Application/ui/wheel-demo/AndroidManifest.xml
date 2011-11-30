@@ -13,50 +13,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 		</activity>
-		<activity android:name="kankan.wheel.demo.TimeActivity" android:screenOrientation="portrait" android:label="Time">
+		<activity android:name="kankan.wheel.demo.LoginActivity" android:screenOrientation="portrait" android:label="Login Screen">
 		    <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="kankan.wheel.WHEEL_SAMPLE"/>
             </intent-filter>
 		</activity>
-        <activity android:name="kankan.wheel.demo.Time2Activity" android:screenOrientation="portrait" android:label="Time 2">
+        <activity android:name="kankan.wheel.demo.FilePickerActivity" android:screenOrientation="portrait" android:label="Show a Presentation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="kankan.wheel.WHEEL_SAMPLE"/>
             </intent-filter>
         </activity>
-        <activity android:name="kankan.wheel.demo.DateActivity" android:screenOrientation="portrait" android:label="Date">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="kankan.wheel.WHEEL_SAMPLE"/>
-            </intent-filter>
-        </activity>
-		<activity android:name="kankan.wheel.demo.PasswActivity" android:screenOrientation="portrait" android:label="Password">
+		<activity android:name="kankan.wheel.demo.SchedulerActivity" android:screenOrientation="portrait" android:label="Schedule a Room">
 		    <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="kankan.wheel.WHEEL_SAMPLE"/>
             </intent-filter>
 		</activity>
-        <activity android:name="kankan.wheel.demo.SlotMachineActivity" android:screenOrientation="portrait" android:label="Slot Machine">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="kankan.wheel.WHEEL_SAMPLE"/>
-            </intent-filter>
-        </activity>
-		<activity android:name=".SchedulerActivity" android:screenOrientation="portrait" android:label="Schedule a Room">
-		    <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="kankan.wheel.WHEEL_SAMPLE"/>
-            </intent-filter>
-		</activity>
-        <!-- activity android:name="kankan.wheel.demo.SpeedActivity" android:screenOrientation="portrait" android:label="Speed">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="kankan.wheel.WHEEL_SAMPLE"/>
-            </intent-filter>
-        </activity-->
-
     </application>
-
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest> 

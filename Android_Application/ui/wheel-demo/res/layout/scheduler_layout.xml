@@ -77,47 +77,57 @@
         </TableRow>
     </TableLayout>
 		
-		
-		<LinearLayout android:id="@+id/linearLayout1" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/selectedDate" android:layout_alignParentRight="true" android:layout_toRightOf="@+id/tableLayout1">
+		<LinearLayout android:id="@+id/startTimeLayout" android:layout_marginTop="20dp" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/selectedDate" android:layout_centerHorizontal="true">
 			<kankan.wheel.widget.WheelView 
 				android:id="@+id/hoursStart" 
 				android:layout_height="82dp" 
 				
-				android:layout_width="wrap_content" />
+				android:layout_width="wrap_content" android:layout_gravity="center"/>
 			<kankan.wheel.widget.WheelView 
 				android:text="TextView" 
-				android:layout_gravity="right" 
 				android:layout_height="82dp" 
 				android:id="@+id/minsStart" 
-				android:layout_width="wrap_content" />
+				android:layout_width="wrap_content" android:layout_gravity="center"/>
 			<kankan.wheel.widget.WheelView 
 				android:id="@+id/ampmStart" 
 				android:layout_height="82dp" 
-				android:layout_width="wrap_content"  />
-			
-			<TextView android:text="to" 
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:id="@+id/toText" 
-				android:layout_height="82dp"
-				android:layout_width="26dp"
-				android:gravity="center_vertical|center_horizontal" />
-			
-			<kankan.wheel.widget.WheelView 
-				android:id="@+id/hoursEnd" 
-				android:layout_height="82dp" 
-				android:layout_width="wrap_content" 
-				android:layout_gravity="right" />
-			<kankan.wheel.widget.WheelView 
-				android:id="@+id/minsEnd" 
-				android:layout_height="82dp" 
-				android:layout_width="wrap_content"
-				android:layout_gravity="right" />
-			<kankan.wheel.widget.WheelView
-				android:id="@+id/ampmEnd"
-				android:layout_height="82dp" 
-				android:layout_width="wrap_content"
-				android:layout_gravity="right" />
+				android:layout_width="wrap_content"  android:layout_gravity="center"/>
 		</LinearLayout>
-			
+	
+		<TextView 
+		android:text="to" 
+			android:id="@+id/toLabel" 
+			android:layout_marginTop="12dp" 
+			android:textAppearance="?android:attr/textAppearanceMedium" 
+			android:layout_below="@+id/startTimeLayout" 
+			android:layout_centerHorizontal="true" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"  />	
     
+	
+		<LinearLayout android:id="@+id/endTimeLayout" android:layout_marginTop="12dp" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_below="@+id/toLabel" android:layout_centerHorizontal="true">
+		
+		<kankan.wheel.widget.WheelView 
+			android:id="@+id/hoursEnd" 
+			android:layout_width="wrap_content" 
+			android:layout_height="82dp" />
+		<kankan.wheel.widget.WheelView 
+			android:id="@+id/minsEnd" 
+			android:layout_width="wrap_content" 
+			android:layout_height="82dp"   />
+		<kankan.wheel.widget.WheelView 
+			android:id="@+id/ampmEnd" 
+			android:layout_width="wrap_content" 
+			android:layout_height="82dp" />
+		</LinearLayout>
+		<Button 
+			android:text="Schedule" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:id="@+id/scheduleButton" 
+			android:layout_below="@+id/endTimeLayout" 
+			android:layout_centerHorizontal="true"
+			android:textSize="26dp" 
+			android:layout_marginTop="36dp" />
+	
    </RelativeLayout>
