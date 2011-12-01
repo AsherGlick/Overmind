@@ -269,6 +269,10 @@ public class DemoActivity extends Activity {
     		while(true)
     		{
     			temp = fromServer.readLine();
+    			if(temp.contains("Done")
+    			{
+    				break;
+    			}
     			//parse this and store in schedules list
     			recievedMessage = temp.split(",");
     			schedules.add(new Schedule(recievedMessage[0], recievedMessage[1], recievedMessage[2]));
@@ -301,6 +305,10 @@ public class DemoActivity extends Activity {
     		while(true)
     		{
     			temp = fromServer.readLine();
+    			if(temp.contains("Done")
+    			{
+    				break;
+    			}
     			recievedMessage = temp.split(",");
     			schedules.add(new Schedule(recievedMessage[0], recievedMessage[1], recievedMessage[2]));
     		}
@@ -332,6 +340,10 @@ public class DemoActivity extends Activity {
     		while(true)
     		{
     			temp = fromServer.readLine();
+    			if(temp.contains("Done")
+    			{
+    				break;
+    			}
     			recievedMessage = temp.split(",");
     			schedules.add(new Schedule(recievedMessage[0], recievedMessage[1], recievedMessage[2]));
     		}
@@ -345,7 +357,7 @@ public class DemoActivity extends Activity {
     public void reserveRoom(String timeStart, String timeEnd)
     {
     	String temp="RESERVE:"+ timeStart + ":" + timeEnd;
-    	String recievedMessage[];
+    	String[] recievedMessage;
     	try
     	{
     		toServer.writeBytes(temp);
@@ -383,7 +395,7 @@ public class DemoActivity extends Activity {
     public void deleteReservation(String timeStart, String timeEnd)
     {
     	String temp="DELETE:"+ timeStart + ":" + timeEnd;
-    	String recievedMessage[];
+    	String[] recievedMessage;
     	try
     	{
     		toServer.writeBytes(temp);
@@ -416,6 +428,42 @@ public class DemoActivity extends Activity {
     		}
     	}
     	catch(IOException e){}
+    }
+    public String getComputerIP(String roomid)
+    {
+    	String temp = "GETIP":
+    	try
+    	{
+    		toServer.writeBytes(temp);
+    		toServer.flush();
+    	}
+    	catch(IOException ex)
+    	{
+   		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
+    	}
+    	try
+    	{
+    		temp = fromServer.readLine();
+    		if(temp.compare("NSC")==0)
+    		{
+			Toast.makeText(this, "This room doesn't have a computer!", Toast.LENGTH_LONG).show();
+			return "0.0.0.0";
+    		}
+    		else 
+    		{
+    			return temp;
+    		}
+    	}
+    	catch(IOException ex)
+    	{
+ 		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();   	
+    	}
+    	return "0.0.0.0";
+    }
+    
+    public void printSchedules()
+    {
+    
     }
     
 }
