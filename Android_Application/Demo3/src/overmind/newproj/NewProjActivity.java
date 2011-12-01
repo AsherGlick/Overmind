@@ -218,18 +218,21 @@ public class NewProjActivity extends Activity {
     		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
     	}
     }
-    public void createConnection (String ip, int port) throws IOException {
+    public boolean createConnection (String ip, int port) throws IOException {
     	try {
     		socket = new Socket (ip,port);
     		toServer = new DataOutputStream ( socket.getOutputStream() );
     	}
     	catch (IOException ex) {
-    		throw ex;
+    		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
+    		return false;
     	}
     	catch(Exception ex)
     	{
     		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
+    		return false;
     	}
+    	return true;
     }
     	//sends the message to connect to specified server
     public void connect(View view)
@@ -434,6 +437,20 @@ public class NewProjActivity extends Activity {
     	}
     	catch(IOException e){}
     }
+    
+    public void attemptConnectionToComputer(String roomid)
+    {
+    	String ip = getComputerIP(roomid);
+    	if(ip.equals("0.0.0.0"))
+    	{
+    		return;
+    	}
+    	else
+    	{
+    		
+    	}
+    }
+    
     public String getComputerIP(String roomid)
     {
     	String temp = "GETIP";

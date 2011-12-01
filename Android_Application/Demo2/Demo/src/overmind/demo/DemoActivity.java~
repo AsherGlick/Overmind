@@ -1,5 +1,8 @@
 package overmind.demo;
 
+import java.io.BufferedReader;
+import java.util.List;
+import java.util.ArrayList;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -22,8 +25,9 @@ public class DemoActivity extends Activity {
 	private Button qr;
 	private EditText ip;
 	private EditText read;
-	private DataInputStream fromServer;
 	private DataOutputStream toServer;
+	private BufferedReader fromServer;
+	private List<Schedule> schedules;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -306,17 +306,27 @@ void *deviceThread(void *threadid)
         	else if(rec_web_data.compare(0,4,"GETIP")==0)	//GIVE ME THE IP TO THE COMPUTER RAWR
         	{
         		getIP(roomid.c_str(), res, conn, connection);
+        		rec_web_data = connection.waitData();
+        		if(rec_web_data.compare(0,3, "YES")==0)
+        		{
+        			//connection is fine, do nothing
+        		}
+        		else
+        		{
+        			//connection failed connect to computer and pipe thru
+        			
+        		}
         	}
         }
         
       }
-      	    PQfinish(conn);
-	    cout << "[DEVICE]: Closed connection" << endl;
-	    return 0;
-	  }
-	}
+      PQfinish(conn);
+      cout << "[DEVICE]: Closed connection" << endl;
+      return 0;
+    }
+  }
 	// End Waiting for connections
-  return 0
+  return 0;
 }
 
 static void parseString(char* temp, char* temp0)
