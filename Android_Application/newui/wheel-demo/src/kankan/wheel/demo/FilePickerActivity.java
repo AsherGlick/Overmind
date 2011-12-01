@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 public class FilePickerActivity extends ListActivity {
 	
-
 	ArrayList<String> combinedList = new ArrayList<String>();
 	ArrayList<String> compPowerpoints = new ArrayList<String>();
 	ArrayList<String> sdPowerpoints = new ArrayList<String>();
@@ -34,29 +33,18 @@ public class FilePickerActivity extends ListActivity {
 
         setContentView(R.layout.file_pick);
 
-        fillFileList();
+        combinedList.clear();
+        combinedList.addAll(getPptsOnComputer());
         
         fileList = new ArrayAdapter<String>(this, R.layout.file_row, combinedList);
         setListAdapter(fileList);
         
     }
-    public void fillFileList()
-    {
-    	//fill compPowerpoints with an ArrayList of file names on the computer
-    	compPowerpoints = getPptsOnComputer();
-    	//fill sdPowerpoints with an ArrayList of file names on the sd card (ie Android)
-    	sdPowerpoints =   getPptsOnSDCard();
         
-    	combinedList.addAll(compPowerpoints);
-        combinedList.addAll(sdPowerpoints);
-        
-        return;
-    }
-    
     public void fillListComputer(View v)
     {
     	combinedList.clear();
-    	combinedList.addAll(compPowerpoints);
+    	combinedList.addAll(getPptsOnComputer());
     	fileList.notifyDataSetChanged();
     	    	
     	return;    	
@@ -72,25 +60,10 @@ public class FilePickerActivity extends ListActivity {
     	
     	return;    	
     }
-    
-    
-    
     public void removeList(ArrayList<String> rem)
     {
     	combinedList.removeAll(rem);
     }
-    
-    public ArrayList<String> getPptsOnSDCard() {
-		// 
-		ArrayList<String> fakeList = new ArrayList<String>();
-		fakeList.add("paper.doc");
-		fakeList.add("image.jpg");
-		fakeList.add("presentationOld.ppt");
-		fakeList.add("song.mp3");
-		fakeList.add("presentationFinal.ppt");
-		return fakeList;
-	}
-
 	public ArrayList<String> getPptsOnComputer()
     {
 		ArrayList<String> fakeList = new ArrayList<String>();	

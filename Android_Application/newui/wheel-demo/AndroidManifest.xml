@@ -5,9 +5,9 @@
       android:versionCode="1"
       android:versionName="1.0">
       
-    <application android:icon="@drawable/wheel" android:label="WheelDemo">
+    <application android:icon="@drawable/wheel" android:label="WheelDemo" android:name="kankan.wheel.demo.globalVarsApp">
 
-		<activity android:name="kankan.wheel.demo.WheelDemo" android:screenOrientation="portrait">
+		<activity android:name="kankan.wheel.demo.LaunchActivity" android:screenOrientation="portrait">
 		    <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
