@@ -27,13 +27,14 @@ using namespace std;
 
 
 void *deviceThread(void *threadid);
-static void parseString(char* temp, char* temp0, socketLink connection);
+static void parseString(char* temp, char* temp0);
 static void getRoomSchedule(char* roomid, PGresult *res, PGconn *conn, socketLink connection);
 static void getRoomScheduleDate(char* roomid, char* date, PGresult *res, PGconn *conn, socketLink connection);
 static bool getRoomScheduleDate(char* roomid, char* start, char* end, PGresult *res, PGconn *conn);
 static void getUserSchedule(char* userid, PGresult *res, PGconn *conn, socketLink connection);
 static void reserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection);
 static void unreserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection);
+static void getIP(char* roomid, PGresult *res, PGconn* conn, socketLink connection);
 static void exit_nicely(PGconn *conn);
 /*void *htmlThread(void *threadid);*/
 
@@ -253,12 +254,14 @@ void *deviceThread(void *threadid)
         {
         	if(rec_web_data.compare(0,6,"ROOMSCH")==0)	//I WANT THE ENTIRE ROOM SCHEDULE FROM NOW TO FOREVER
         	{
-        		getRoomSchedule(roomid.c_str(), res, conn, connection);
+        		char sendtemp[256];
+        		strcpy(sendtemp, roomid.c_str());
+        		getRoomSchedule(sendtemp, res, conn, connection);
         	}
         	else if(rec_web_data.compare(0,6,"ROOMDTE")==0)	//I WANT THE ROOM SCHEDULE FOR JUST THIS DATE PLZ
         	{
         		//parse
-        		char* temp;
+        		char temp[256];
         		char* pch;
         		char* date[2];
         		strcpy(temp, rec_web_data.c_str());
@@ -269,12 +272,14 @@ void *deviceThread(void *threadid)
 				pch = strtok (NULL, ": ");
 			}
         		//send request
-        		getRoomScheduleDate(roomid.c_str(), date[1], res, conn, connection);
+        		char sendtemp[256];
+        		strcpy(sendtemp, roomid.c_str());
+        		getRoomScheduleDate(sendtemp, date[1], res, conn, connection);
         	}
         	else if(rec_web_data.compare(0,6,"RESERVE")==0)	//I WANT TO RESERVE A ROOM
         	{
         		//parse
-        		char* temp;
+        		char temp[256];
         		char* pch;
         		char* date[3];
         		strcpy(temp, rec_web_data.c_str());
@@ -285,12 +290,16 @@ void *deviceThread(void *threadid)
 				pch = strtok (NULL, ": ");
 			}
         		//send request
-        		reserve(username.c_str(), roomid.c_str(), date[1], date[2], res, conn, connection);
+        		char sendtemp1[256];
+        		strcpy(sendtemp1, username.c_str());
+        		char sendtemp2[256];
+        		strcpy(sendtemp2, roomid.c_str());
+        		reserve(sendtemp1, sendtemp2, date[1], date[2], res, conn, connection);
         	}
         	else if(rec_web_data.compare(0,5,"DELETE")==0)	//I WANT TO DELETE A RESERVATION
         	{
         		//parse
-        		char* temp;
+        		char temp[256];
         		char* pch;
         		char* date[3];
         		strcpy(temp, rec_web_data.c_str());
@@ -301,11 +310,17 @@ void *deviceThread(void *threadid)
 				pch = strtok (NULL, ": ");
 			}
         		//send request
-        		unreserve(username.c_str(), roomid.c_str(), date[1], date[2], res, conn, connection)
+        		char sendtemp1[256];
+        		strcpy(sendtemp1, username.c_str());
+        		char sendtemp2[256];
+        		strcpy(sendtemp2, roomid.c_str());
+        		unreserve(sendtemp1, sendtemp2, date[1], date[2], res, conn, connection);
         	}
         	else if(rec_web_data.compare(0,4,"GETIP")==0)	//GIVE ME THE IP TO THE COMPUTER RAWR
         	{
-        		getIP(roomid.c_str(), res, conn, connection);
+        		char sendtemp[256];
+        		strcpy(sendtemp, roomid.c_str());
+        		getIP(sendtemp, res, conn, connection);
         		rec_web_data = connection.waitData();
         		if(rec_web_data.compare(0,3, "YES")==0)
         		{
@@ -430,7 +445,7 @@ static void getUserSchedule(char* userid, PGresult *res, PGconn *conn, socketLin
 {
 	char* temp = "SELECT getRoomScheduleTime($1);";
 	const char* paramValues[1];
-	paramValues[0] = roomid;
+	paramValues[0] = userid;
 	int paramFormat[1];
 	paramFormat[0] = 0;
 	res = PQexecParams(conn, temp, 1, NULL, paramValues, NULL, paramFormat, 0); 
@@ -556,7 +571,7 @@ main(int argc, char **argv)
     PGconn     *conn;
     PGresult   *res;
 
-    /*
+    
      * If the user supplies a parameter on the command line, use it as the
      * conninfo string; otherwise default to setting dbname=postgres and using
      * environment variables or defaults for all other connection parameters.
@@ -566,10 +581,10 @@ main(int argc, char **argv)
     else
         conninfo = "host=server.projectovermind.com port=5432 dbname=roommanager user=overmind password=chexmix";
 
-    /* Make a connection to the database 
+    // Make a connection to the database 
     conn = PQconnectdb(conninfo);
 
-    /* Check to see that the backend connection was successfully made 
+    // Check to see that the backend connection was successfully made 
     if (PQstatus(conn) != CONNECTION_OK)
     {
         fprintf(stderr, "Connection to database failed: %s",
@@ -578,7 +593,7 @@ main(int argc, char **argv)
     }
 
     getRoomSchedule("123",res,conn);
-    /* close the connection to the database and cleanup 
+    // close the connection to the database and cleanup 
     PQfinish(conn);
 
     return 0;
