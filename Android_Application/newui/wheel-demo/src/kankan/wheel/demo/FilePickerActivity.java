@@ -42,14 +42,29 @@ public class FilePickerActivity extends ListActivity {
         combinedList.clear();
         combinedList.addAll(getPptsOnComputer());
         
-        fileList = new ArrayAdapter<String>(this, R.layout.file_row, combinedList);
-        setListAdapter(fileList);
+        
+        
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, combinedList);
+		setListAdapter(adapter);
+        
+        
+        
+        
+        //fileList = new ArrayAdapter<String>(this, R.layout.file_row, combinedList);
+        //setListAdapter(fileList);
         
         
         //ListView list = (ListView)findViewById(android.R.id.list);
         list = getListView();
         //list.setAdapter(adapter);
     }
+    @Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		String item = (String) getListAdapter().getItem(position);
+		Toast.makeText(this, item + " selected", Toast.LENGTH_LONG).show();
+		setContentView(R.layout.ppt_switch);
+	}
     
     /*list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 		@Override
@@ -60,16 +75,6 @@ public class FilePickerActivity extends ListActivity {
 			//setContentView(R.layout.ppt_switch);
 		}
     });*/
-    
-    public OnItemClickListener tester = new OnItemClickListener(){
-		@Override
-		public void onItemClick(AdapterView<?> adapterView, View v, int pos, long id) {
-			// TODO Auto-generated method stub
-			//whatWasClicked(pos);
-			//setContentView(R.layout.ppt_switch);
-			
-		}
-    };
     
     public void whatWasClicked(int pos) {
     	Toast.makeText(this, "Hello", Toast.LENGTH_LONG).show();
