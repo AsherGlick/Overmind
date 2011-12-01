@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
@@ -15,17 +16,21 @@ import android.os.Bundle;
 import android.os.Environment;
 
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class FilePickerActivity extends ListActivity {
 	
-
 	ArrayList<String> combinedList = new ArrayList<String>();
 	ArrayList<String> compPowerpoints = new ArrayList<String>();
 	ArrayList<String> sdPowerpoints = new ArrayList<String>();
 	ArrayAdapter<String> fileList;
+	
+	ListView list;
 	
     /** Called when the activity is first created. */
     @Override
@@ -34,29 +39,52 @@ public class FilePickerActivity extends ListActivity {
 
         setContentView(R.layout.file_pick);
 
-        fillFileList();
+        combinedList.clear();
+        combinedList.addAll(getPptsOnComputer());
         
-        fileList = new ArrayAdapter<String>(this, R.layout.file_row, combinedList);
-        setListAdapter(fileList);
         
+        
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, combinedList);
+		setListAdapter(adapter);
+        
+        
+        
+        
+        //fileList = new ArrayAdapter<String>(this, R.layout.file_row, combinedList);
+        //setListAdapter(fileList);
+        
+        
+        //ListView list = (ListView)findViewById(android.R.id.list);
+        list = getListView();
+        //list.setAdapter(adapter);
     }
-    public void fillFileList()
-    {
-    	//fill compPowerpoints with an ArrayList of file names on the computer
-    	compPowerpoints = getPptsOnComputer();
-    	//fill sdPowerpoints with an ArrayList of file names on the sd card (ie Android)
-    	sdPowerpoints =   getPptsOnSDCard();
-        
-    	combinedList.addAll(compPowerpoints);
-        combinedList.addAll(sdPowerpoints);
-        
-        return;
-    }
+    @Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		String item = (String) getListAdapter().getItem(position);
+		Toast.makeText(this, item + " selected", Toast.LENGTH_LONG).show();
+		setContentView(R.layout.ppt_switch);
+	}
+    
+    /*list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+		@Override
+		public void onItemClick(AdapterView<?> adapterView, View v, int pos,
+				long id) {
+			// TODO Auto-generated method stub
+			//whatWasClicked(pos);
+			//setContentView(R.layout.ppt_switch);
+		}
+    });*/
+    
+    public void whatWasClicked(int pos) {
+    	Toast.makeText(this, "Hello", Toast.LENGTH_LONG).show();
+    	setContentView(R.layout.login_layout);
+    }	
     
     public void fillListComputer(View v)
     {
     	combinedList.clear();
-    	combinedList.addAll(compPowerpoints);
+    	combinedList.addAll(getPptsOnComputer());
     	fileList.notifyDataSetChanged();
     	    	
     	return;    	
@@ -72,25 +100,10 @@ public class FilePickerActivity extends ListActivity {
     	
     	return;    	
     }
-    
-    
-    
     public void removeList(ArrayList<String> rem)
     {
     	combinedList.removeAll(rem);
     }
-    
-    public ArrayList<String> getPptsOnSDCard() {
-		// 
-		ArrayList<String> fakeList = new ArrayList<String>();
-		fakeList.add("paper.doc");
-		fakeList.add("image.jpg");
-		fakeList.add("presentationOld.ppt");
-		fakeList.add("song.mp3");
-		fakeList.add("presentationFinal.ppt");
-		return fakeList;
-	}
-
 	public ArrayList<String> getPptsOnComputer()
     {
 		ArrayList<String> fakeList = new ArrayList<String>();	

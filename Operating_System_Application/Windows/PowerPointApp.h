@@ -65,9 +65,9 @@ public:
 			full_screen();
 		if (strncmp(command, "NEXT",4)==0)
 			next_slide();
-		if(strncmp(command, "PREV",4)==0)
+		if (strncmp(command, "PREV",4)==0)
 			prev_slide();
-		if(strncmp(command, "SHUT",4)==0)
+		if (strncmp(command, "SHUT",4)==0)
 			close();
 	}
 };
