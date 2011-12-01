@@ -133,19 +133,48 @@ static void getUser(char* userid, PGresult *res, PGconn *conn)
 	PQclear(res);
 }
 
+static void reserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn)
+{
+	char* temp = "INSERT INTO reservation($1, $2, $3, $4);";
+	const char* paramValues[4];
+	paramValues[0] = userid;
+	paramValues[1] = roomid;
+	paramValues[2] = start;
+	paramValues[3] = end;
+	int paramFormat[4];
+	paramFormat[0] = 0;
+	paramFormat[1] = 0;
+	paramFormat[2] = 0;
+	paramFormat[3] = 0;
+	res = PQexecParams(conn, temp, 1, NULL, paramValues, NULL, paramFormat, 0);
+	
+	PQclear(res);
+}
+
+static void unreserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn)
+{
+	char* temp = "DELETE FROM reservation WHERE reservation.user_id = $1 AND reservation.room_id = $2 AND reservation.reserve_start = $3 AND reservation.reserve_ned = $4;";
+	const char* paramValues[4];
+	paramValues[0] = userid;
+	paramValues[1] = roomid;
+	paramValues[2] = start;
+	paramValues[3] = end;
+	int paramFormat[4];
+	paramFormat[0] = 0;
+	paramFormat[1] = 0;
+	paramFormat[2] = 0;
+	paramFormat[3] = 0;
+	res = PQexecParams(conn, temp, 1, NULL, paramValues, NULL, paramFormat, 0);
+	
+	PQclear(res);
+}
+
 // Quits the connection to the database.
 static void exit_nicely(PGconn *conn)
 {
     PQfinish(conn);
     exit(1);
 }
-
-/*
- * This function prints a query result that is a binary-format fetch from
- * a table defined as in the comment above.  We split it out because the
- * main() function uses it twice.
- */
-
 
 int
 main(int argc, char **argv)
