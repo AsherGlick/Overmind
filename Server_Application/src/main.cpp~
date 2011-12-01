@@ -313,7 +313,7 @@ void *deviceThread(void *threadid)
         		}
         		else
         		{
-        			//connection failed connect to computer and pipe thru
+        			//connection failed, connect to computer and pipe thru
         			
         		}
         	}
