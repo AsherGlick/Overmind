@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
@@ -15,9 +16,11 @@ import android.os.Bundle;
 import android.os.Environment;
 
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class FilePickerActivity extends ListActivity {
 	
@@ -39,8 +42,26 @@ public class FilePickerActivity extends ListActivity {
         fileList = new ArrayAdapter<String>(this, R.layout.file_row, combinedList);
         setListAdapter(fileList);
         
-    }
         
+        //ListView list = (ListView)findViewById(android.R.id.list);
+        ListView list = getListView();
+        //list.setAdapter(adapter);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+			@Override
+			public void onItemClick(AdapterView<?> adapterView, View v, int pos,
+					long id) {
+				// TODO Auto-generated method stub
+				//whatWasClicked(pos);
+				//setContentView(R.layout.ppt_switch);
+			}
+        });
+    }
+    
+    public void whatWasClicked(int pos) {
+    	Toast.makeText(this, "Hello", Toast.LENGTH_LONG).show();
+    	setContentView(R.layout.login_layout);
+    }	
+    
     public void fillListComputer(View v)
     {
     	combinedList.clear();
