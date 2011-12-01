@@ -17,7 +17,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class NewProjActivity extends Activity {
-	private Socket socket;
+	private Socket socket;	//socket for server communication
+	private Socket socket2;	//socket for client communication
 	private Button leftButton;
 	private Button rightButton;
 	private Button fullScreen;
@@ -28,6 +29,7 @@ public class NewProjActivity extends Activity {
 	//private EditText read;
 	private DataOutputStream toServer;
 	private BufferedReader fromServer;
+	private DataOutputStream toClient;
 	private List<Schedule> schedules;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,6 +103,7 @@ public class NewProjActivity extends Activity {
   		// switch views
   		
     }
+    //Send data to server
     public void sendData(String data) {
     	try 
     	{
@@ -116,6 +119,40 @@ public class NewProjActivity extends Activity {
     		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
     	}
     }
+    public String getData()
+    {
+    	try
+    	{
+    		return fromServer.readLine();
+    	}
+    	catch(IOException ex)
+    	{
+    		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
+    	}
+    	catch(Exception ex)
+    	{
+    		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
+    	}
+    	return "";
+    }
+    //Send data to client
+    public void sendData2(String data)
+    {
+    	try 
+    	{
+    		toClient.writeBytes(data);
+    		toClient.flush();
+    	}
+    	catch(IOException ex)
+    	{
+    		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
+    	}
+    	catch(Exception ex)
+    	{
+    		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
+    	}
+    }
+    
     //handles the message from zxing
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -165,63 +202,43 @@ public class NewProjActivity extends Activity {
     //sends the message to progress slideshow left
     public void left(View view)
     {
-    	sendData("PREV");
+    	sendData2("PREV");
     }
         //sends the message to progress slideshow right
     public void right(View view)
     {
-    	try
-    	{
-    		toServer.writeBytes("NEXT");
-    		toServer.flush();
-    	}
-    	catch(IOException ex)
-    	{
-    		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
-    	}
-    	catch(Exception ex)
-    	{
-    		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
-    	}
+    	sendData2("NEXT");
     }
         //sends the message to fullscreen
     public void fullscreen(View view)
     {
-    	try
-    	{
-    		toServer.writeBytes("FULL");
-    		toServer.flush();
-    	}
-    	catch(IOException ex)
-    	{
-    		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
-    	}
-    	catch(Exception ex)
-    	{
-    		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
-    	}
+    	sendData2("FULL");
     }
         //sends the message to close slideshow
     public void close(View view)
     {
-    	try
-    	{
-    		toServer.writeBytes("SHUT");
-    		toServer.flush();
+    	sendData2("SHUT");
+    }
+    //Create a connection to the server
+    public void createConnection (String ip, int port) throws IOException {
+    	try {
+    		socket = new Socket (ip,port);
+    		toServer = new DataOutputStream ( socket.getOutputStream() );
     	}
-    	catch(IOException ex)
-    	{
-    		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
+    	catch (IOException ex) {
+    		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
     	}
     	catch(Exception ex)
     	{
     		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
     	}
     }
-    public boolean createConnection (String ip, int port) throws IOException {
+    //create a connection to the client
+    public boolean createClientConnection(String ip, int port) throws IOException
+    {
     	try {
-    		socket = new Socket (ip,port);
-    		toServer = new DataOutputStream ( socket.getOutputStream() );
+    		socket2 = new Socket (ip,port);
+    		toClient = new DataOutputStream ( socket2.getOutputStream() );
     	}
     	catch (IOException ex) {
     		Toast.makeText(this,ex.toString(),Toast.LENGTH_LONG).show();
@@ -257,18 +274,10 @@ public class NewProjActivity extends Activity {
     public void getScheduleByRoom()
     {
     	//construct the message to send
-    	String temp="ROOMSCH";
+    	String temp;
     	String[] recievedMessage;
     	//send message
-    	try
-    	{
-    		toServer.writeBytes(temp);
-    		toServer.flush();
-    	}
-    	catch(IOException ex)
-    	{
-    		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
-    	}
+    	sendData("ROOMSCH");
     	//receive message
     	//message is formatted as such roomid,yy-mm-dd hh-mm-ss,yy-mm-dd hh-mm-ss
     	//room_id, time_start, time_end
@@ -277,7 +286,7 @@ public class NewProjActivity extends Activity {
     		while(true)
     		{
     			temp = fromServer.readLine();
-    			if(temp.contains("Done"))
+    			if(temp.equals("Done"))
     			{
     				break;
     			}
@@ -294,26 +303,17 @@ public class NewProjActivity extends Activity {
     //Sends the message to get the room schedule from a particular date
     public void getScheudleByDate(String date)
     {
-    	//construct the message to send
-    	String temp="ROOMDTE:"+ date;
+    	String temp;
     	String[] recievedMessage;
     	//send message
-    	try
-    	{
-    		toServer.writeBytes(temp);
-    		toServer.flush();
-    	}
-    	catch(IOException ex)
-    	{
-    		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
-    	}
+    	sendData("ROOMDTE:"+ date);
     	//receive message
     	try
     	{
     		while(true)
     		{
     			temp = fromServer.readLine();
-    			if(temp.contains("Done"))
+    			if(temp.equals("Done"))
     			{
     				break;
     			}
@@ -329,26 +329,17 @@ public class NewProjActivity extends Activity {
     //Sends the message to the the room schedule for this user
     public void getMySchedules()
     {
-    	//construct the message to send
-    	String temp="MYSCH";
+    	String temp;
     	String[] recievedMessage;
     	//send message
-    	try
-    	{
-    		toServer.writeBytes(temp);
-    		toServer.flush();
-    	}
-    	catch(IOException ex)
-    	{
-    		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
-    	}
+    	sendData("MYSCH");
     	//receive message
     	try
     	{
     		while(true)
     		{
     			temp = fromServer.readLine();
-    			if(temp.contains("Done"))
+    			if(temp.equals("Done"))
     			{
     				break;
     			}
@@ -364,17 +355,9 @@ public class NewProjActivity extends Activity {
     //sends the message to reserve a room R
     public void reserveRoom(String timeStart, String timeEnd)
     {
-    	String temp="RESERVE:"+ timeStart + ":" + timeEnd;
+    	String temp;
     	String[] recievedMessage;
-    	try
-    	{
-    		toServer.writeBytes(temp);
-    		toServer.flush();
-    	}
-    	catch(IOException ex)
-    	{
-    		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
-    	}
+    	sendData("RESERVE:"+ timeStart + ":" + timeEnd);
     	try
     	{
     		while(true)
@@ -402,17 +385,9 @@ public class NewProjActivity extends Activity {
     //sends a message to un-reserve a room
     public void deleteReservation(String timeStart, String timeEnd)
     {
-    	String temp="DELETE:"+ timeStart + ":" + timeEnd;
+    	String temp;
     	String[] recievedMessage;
-    	try
-    	{
-    		toServer.writeBytes(temp);
-    		toServer.flush();
-    	}
-    	catch(IOException ex)
-    	{
-    		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
-    	}
+    	sendData("DELETE:"+ timeStart + ":" + timeEnd);
     	try
     	{
     		while(true)
@@ -441,28 +416,35 @@ public class NewProjActivity extends Activity {
     public void attemptConnectionToComputer(String roomid)
     {
     	String ip = getComputerIP(roomid);
+    
     	if(ip.equals("0.0.0.0"))
     	{
     		return;
     	}
     	else
     	{
-    		
+    		try 
+    		{
+				if(createClientConnection(ip,8080))	//connection is fine tell the server this
+				{
+					sendData("YES");
+				}
+				else	//connection is no go try to pipe it through
+				{
+					sendData("FAIL");
+				}
+			} 
+    		catch (IOException e) 
+    		{
+    			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+			}
     	}
     }
     
     public String getComputerIP(String roomid)
     {
-    	String temp = "GETIP";
-    	try
-    	{
-    		toServer.writeBytes(temp);
-    		toServer.flush();
-    	}
-    	catch(IOException ex)
-    	{
-   		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();
-    	}
+    	String temp;
+    	sendData("GETIP");
     	try
     	{
     		temp = fromServer.readLine();

@@ -20,13 +20,12 @@
 
 using namespace std;
 
-/*
 void* open_ppt(void* arg)
 {
 	char* name = (char*)arg;
 	execlp("C:/Program Files (x86)/Microsoft Office/Office12/POWERPNT.exe", "POWERPNT.exe", "/N", name, NULL);
 	return 0;
-}*/
+}
 /*
  * main
  * starts the OS client on the background.
@@ -46,159 +45,149 @@ int main(void)
 	strcpy(port, in);
 	config.close();
 	
-	while(true)
-	{
-		WSADATA wsaData;
-		//int test;
+	WSADATA wsaData;
+	//int test;
 	
-		SOCKET ListenSocket = INVALID_SOCKET;
-		SOCKET ClientSocket = INVALID_SOCKET;
+	SOCKET ListenSocket = INVALID_SOCKET;
+	SOCKET ClientSocket = INVALID_SOCKET;
 	
-		struct addrinfo *listenS = NULL;
-		struct addrinfo serverS;
+	struct addrinfo *listenS = NULL;
+	struct addrinfo serverS;
 
-		int buffer_len = 4096;
-		char buffer[buffer_len];
+	int buffer_len = 4096;
+	char buffer[buffer_len];
 	
-		//Initializing Winsock
-		//test = WSAStartup(MAKEWORD(2,2), &wsaData);
-		//if(test != 0)
-		if (WSAStartup(MAKEWORD(2,2), &wsaData))
-		{
-			cerr << "WSAStartup failed" << endl;
-			return 1;
-		}
+	//Initializing Winsock
+	//test = WSAStartup(MAKEWORD(2,2), &wsaData);
+	//if(test != 0)
+	if (WSAStartup(MAKEWORD(2,2), &wsaData))
+	{
+		cerr << "WSAStartup failed" << endl;
+		return 1;
+	}
 	
-		ZeroMemory(&serverS, sizeof(serverS));
-		serverS.ai_family = AF_INET;
-		serverS.ai_socktype = SOCK_STREAM;
-		serverS.ai_protocol = IPPROTO_TCP;
-		serverS.ai_flags = AI_PASSIVE;
-		
-		//Set up the address and port.
-		//test = getaddrinfo(NULL, port, &server, &listen);
-		//if (test != 0)
-		if (getaddrinfo(NULL, port, &serverS, &listenS))
-		{
-			cerr << "getaddrinfo failed" << endl;
-			WSACleanup();
-			return 1;
-		}
+	ZeroMemory(&serverS, sizeof(serverS));
+	serverS.ai_family = AF_INET;
+	serverS.ai_socktype = SOCK_STREAM;
+	serverS.ai_protocol = IPPROTO_TCP;
+	serverS.ai_flags = AI_PASSIVE;
+	
+	//Set up the address and port.
+	//test = getaddrinfo(NULL, port, &server, &listen);
+	//if (test != 0)
+	if (getaddrinfo(NULL, port, &serverS, &listenS))
+	{
+		cerr << "getaddrinfo failed" << endl;
+		WSACleanup();
+		return 1;
+	}
 	
 	// Create a Socket to listen on
-		ListenSocket = socket(listenS->ai_family, listenS->ai_socktype, listenS->ai_protocol);
-		if (ListenSocket == INVALID_SOCKET)
-		{
-			cerr << "socket creation failed: " << WSAGetLastError() << endl;
-			freeaddrinfo(listenS);
-			WSACleanup();
-			return 1;
-		}
-		
-		// Setting up the socket
-		//test = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
-		//if (test = SOCKET_ERROR)
-		if (bind(ListenSocket, listenS->ai_addr, (int)listenS->ai_addrlen))
-		{
-			cerr << "bind error: " << WSAGetLastError() << endl;
-			freeaddrinfo(listenS);
-			closesocket(ListenSocket);
-			WSACleanup();
-			return 1;
-		}
+	ListenSocket = socket(listenS->ai_family, listenS->ai_socktype, listenS->ai_protocol);
+	if (ListenSocket == INVALID_SOCKET)
+	{
+		cerr << "socket creation failed: " << WSAGetLastError() << endl;
 		freeaddrinfo(listenS);
-		
-		// Start listening for connections
-		// Currently assumes the phone is authorized to use the computer.
-		int test = listen(ListenSocket, SOMAXCONN);
-		if (test == SOCKET_ERROR)
-		{
-			cerr << "listen failed: " << WSAGetLastError() << endl;
-			closesocket(ListenSocket);
-			WSACleanup();
-			return 1;
-		}
-	// Accept a client
-		ClientSocket = accept(ListenSocket, NULL, NULL);
-		if (ClientSocket == INVALID_SOCKET)
-		{
-			cerr << "accept failed: " << WSAGetLastError() << endl;
-			closesocket(ListenSocket);
-			WSACleanup();
-			return 1;
-		}
+		WSACleanup();
+		return 1;
+	}
+	
+	// Setting up the socket
+	//test = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
+	//if (test = SOCKET_ERROR)
+	if (bind(ListenSocket, listenS->ai_addr, (int)listenS->ai_addrlen))
+	{
+		cerr << "bind error: " << WSAGetLastError() << endl;
+		freeaddrinfo(listenS);
 		closesocket(ListenSocket);
-			// Keep doing the commands the phone sends.
-		Application* app = new PowerPointApp();
-		int received = 1;
-		do
+		WSACleanup();
+		return 1;
+	}
+	freeaddrinfo(listenS);
+	
+	// Start listening for connections
+	// Currently assumes the phone is authorized to use the computer.
+	int test = listen(ListenSocket, SOMAXCONN);
+	if (test == SOCKET_ERROR)
+	{
+		cerr << "listen failed: " << WSAGetLastError() << endl;
+		closesocket(ListenSocket);
+		WSACleanup();
+		return 1;
+	}
+	
+	// Accept a client
+	ClientSocket = accept(ListenSocket, NULL, NULL);
+	if (ClientSocket == INVALID_SOCKET)
+	{
+		cerr << "accept failed: " << WSAGetLastError() << endl;
+		closesocket(ListenSocket);
+		WSACleanup();
+		return 1;
+	}
+	closesocket(ListenSocket);
+	
+	// Keep doing the commands the phone sends.
+	Application* app = new PowerPointApp();
+	int received = 1;
+	do
+	{
+		received = recv(ClientSocket, buffer, buffer_len, 0);
+		if (received > 0)
 		{
-			received = recv(ClientSocket, buffer, buffer_len, 0);
-			if (received > 0)
+			if(strncmp(buffer, "FILE", 4)==0)
 			{
-				if(strncmp(buffer, "FILE", 4)==0)
+				received = recv(ClientSocket, buffer, buffer_len, 0);
+				char filename[buffer_len];
+				char filesz[buffer_len];
+				strcpy(filename, "t");
+				char* tx = strtok(buffer, "|");
+				strcat(filename, tx);
+							
+				tx = strtok(NULL, "|");
+				int filesize = atoi(tx);
+							
+				int output = open(filename, O_WRONLY | O_TRUNC | O_CREAT, 0600);
+				int cursize = 0;
+				while (cursize < filesize)
 				{
 					received = recv(ClientSocket, buffer, buffer_len, 0);
-					char filename[buffer_len];
-					char filesz[buffer_len];
-					strcpy(filename, "t");
-					char* tx = strtok(buffer, "|");
-					strcat(filename, tx);
-						
-					tx = strtok(NULL, "|");
-					int filesize = atoi(tx);
-						
-					int output = open(filename, O_WRONLY | O_TRUNC | O_CREAT, 0600);
-					int cursize = 0;
-					while (cursize < filesize)
-					{
-						received = recv(ClientSocket, buffer, buffer_len, 0);
-						cursize = cursize+received;
-						write(output, buffer, received);
-					}
-					pid_t pid = fork();
-					//printf("%d\n", pid);
-					if (pid < 0)
-					{
-						perror( "fork failed\n");
-					}
-					else if( pid == 0)
-					{
-						execlp("C:/Program Files (x86)/Microsoft Office/Office12/POWERPNT.exe", "POWERPNT.exe", "/N", filename, NULL);
-					}
-					else
-					{
-					}
+					cursize = cursize+received;
+					write(output, buffer, received);
 				}
-				else
-				{
-					app->action(buffer);
-				}
-			}
-			else if(received == 0)
-			{
-				cout << "Connection closed." << endl;
+				
+				pthread_t tid;
+				int rc = pthread_create(&tid, NULL, open_ppt, filename);
 			}
 			else
 			{
-				cerr << "recv failed: " << WSAGetLastError() << endl;
-				closesocket(ClientSocket);
-				WSACleanup();
-				return 1;
+				app->action(buffer);
 			}
 		}
-		while (received > 0);
-
-	// Close socket
-		if (shutdown(ClientSocket, SD_SEND) == SOCKET_ERROR)
+		else if(received == 0)
 		{
-			cerr << "shutdown failed: " << WSAGetLastError() << endl;
+			cout << "Connection closed." << endl;
+		}
+		else
+		{
+			cerr << "recv failed: " << WSAGetLastError() << endl;
 			closesocket(ClientSocket);
 			WSACleanup();
 			return 1;
 		}
+	}
+	while (received > 0);
+	
+	// Close socket
+	if (shutdown(ClientSocket, SD_SEND) == SOCKET_ERROR)
+	{
+		cerr << "shutdown failed: " << WSAGetLastError() << endl;
 		closesocket(ClientSocket);
 		WSACleanup();
+		return 1;
 	}
+	closesocket(ClientSocket);
+	WSACleanup();
+
 	return 0;
 }
