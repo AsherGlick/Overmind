@@ -447,18 +447,28 @@ public class DemoActivity extends Activity {
     		if(temp.compare("NSC")==0)
     		{
 			Toast.makeText(this, "This room doesn't have a computer!", Toast.LENGTH_LONG).show();
+			return "0.0.0.0";
     		}
-    		else return temp;
+    		else 
+    		{
+    			return temp;
+    		}
     	}
     	catch(IOException ex)
     	{
-    	
+ 		Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG).show();   	
     	}
+    	return "0.0.0.0";
     }
     
     public void printSchedules()
     {
-    
+    	ArrayList<String> combinedList = new ArrayList<String>();
+    	
+    	
+    	
+    	fileList = new ArrayAdapter<String>(this, R.layout.file_row, combinedList);
+setListAdapter(fileList);
     }
     
 }

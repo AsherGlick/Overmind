@@ -1,6 +1,7 @@
-package overmind.demo;
+package overmind.newproj;
 
 import java.io.BufferedReader;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.DataInputStream;
@@ -15,7 +16,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class DemoActivity extends Activity {
+public class NewProjActivity extends Activity {
 	private Socket socket;
 	private Button leftButton;
 	private Button rightButton;
@@ -24,7 +25,7 @@ public class DemoActivity extends Activity {
 	private Button connect;
 	private Button qr;
 	private EditText ip;
-	private EditText read;
+	//private EditText read;
 	private DataOutputStream toServer;
 	private BufferedReader fromServer;
 	private List<Schedule> schedules;
@@ -38,13 +39,13 @@ public class DemoActivity extends Activity {
         connect = (Button) findViewById(R.id.button4);
         close = (Button) findViewById(R.id.button5);
         ip = (EditText) findViewById(R.id.editText1);
-        read = (EditText) findViewById(R.id.editText2);
+        //read = (EditText) findViewById(R.id.editText2);
         qr = (Button) findViewById(R.id.button6);
     }
     //called when scan button is called, calls the zxing application
     public void qrread(View view)
     {
-    	IntentIntegrator integrator = new IntentIntegrator(DemoActivity.this);
+    	IntentIntegrator integrator = new IntentIntegrator(NewProjActivity.this);
     	integrator.initiateScan(IntentIntegrator.QR_CODE_TYPES);
     }
     // this function parses and handles the first version of the QR code
@@ -273,7 +274,7 @@ public class DemoActivity extends Activity {
     		while(true)
     		{
     			temp = fromServer.readLine();
-    			if(temp.contains("Done")
+    			if(temp.contains("Done"))
     			{
     				break;
     			}
@@ -309,7 +310,7 @@ public class DemoActivity extends Activity {
     		while(true)
     		{
     			temp = fromServer.readLine();
-    			if(temp.contains("Done")
+    			if(temp.contains("Done"))
     			{
     				break;
     			}
@@ -344,7 +345,7 @@ public class DemoActivity extends Activity {
     		while(true)
     		{
     			temp = fromServer.readLine();
-    			if(temp.contains("Done")
+    			if(temp.contains("Done"))
     			{
     				break;
     			}
@@ -435,7 +436,7 @@ public class DemoActivity extends Activity {
     }
     public String getComputerIP(String roomid)
     {
-    	String temp = "GETIP":
+    	String temp = "GETIP";
     	try
     	{
     		toServer.writeBytes(temp);
@@ -448,7 +449,7 @@ public class DemoActivity extends Activity {
     	try
     	{
     		temp = fromServer.readLine();
-    		if(temp.compare("NSC")==0)
+    		if(temp.compareTo("NSC")==0)
     		{
 			Toast.makeText(this, "This room doesn't have a computer!", Toast.LENGTH_LONG).show();
 			return "0.0.0.0";
@@ -468,11 +469,13 @@ public class DemoActivity extends Activity {
     public void printSchedules()
     {
     	ArrayList<String> combinedList = new ArrayList<String>();
-    	
-    	
-    	
-    	fileList = new ArrayAdapter<String>(this, R.layout.file_row, combinedList);
-setListAdapter(fileList);
+    	for (Schedule t : schedules)
+    	{
+    		combinedList.add(t.getDate()+" "+t.getStartTime()+" "+t.getEndTime());
+    	}
+ 		//my current xml doesnt have this stuff so uncomment when we do.
+    	//fileList = new ArrayAdapter<String>(this, R.layout.file_row, combinedList);
+    	//setListAdapter(fileList);
     }
     
 }
