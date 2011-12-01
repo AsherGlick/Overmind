@@ -467,7 +467,7 @@ static void reserve(char* userid, char* roomid, char* start, char* end, PGresult
 	}
 	else
 	{
-		string message("Fail");
+		string message("Fail,Time slot is already taken");
 		connection.send(message);
 		return;
 	}
@@ -477,7 +477,7 @@ static void unreserve(char* userid, char* roomid, char* start, char* end, PGresu
 {
 	if(getRoomScheduleDate(roomid, start, end, res, conn))
 	{
-		string message("Fail");
+		string message("Fail,no such reservation");
 		connection.send(message);
 		return;
 	}
