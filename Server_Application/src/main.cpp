@@ -30,13 +30,10 @@ void *deviceThread(void *threadid);
 static void parseString(char* temp, char* temp0, socketLink connection);
 static void getRoomSchedule(char* roomid, PGresult *res, PGconn *conn, socketLink connection);
 static void getRoomScheduleDate(char* roomid, char* date, PGresult *res, PGconn *conn, socketLink connection);
-static void getRoomScheduleDate(char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection);
+static bool getRoomScheduleDate(char* roomid, char* start, char* end, PGresult *res, PGconn *conn);
 static void getUserSchedule(char* userid, PGresult *res, PGconn *conn, socketLink connection);
-<<<<<<< HEAD
-=======
 static void reserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection);
 static void unreserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection);
->>>>>>> 41dc06000629f72afd4a24ab34c131d4f1f191d9
 static void exit_nicely(PGconn *conn);
 /*void *htmlThread(void *threadid);*/
 
@@ -251,58 +248,6 @@ void *deviceThread(void *threadid)
         {
         	roomid = rec_web_data;
         	rec_num++;
-<<<<<<< HEAD
-        }
-        else //else this is extradata territory, a command to do something, parse and work magic
-        {
-        	if(rec_web_data.compare(0,6,"ROOMSCH")==0)	//I WANT THE ENTIRE ROOM SCHEDULE FROM NOW TO FOREVER
-        	{
-        		getRoomSchedule(roomid.c_str(), res, conn, connection);
-        	}
-        	else if(rec_web_data.compare(0,6,"ROOMDTE")==0)	//I WANT THE ROOM SCHEDULE FOR JUST THIS DATE PLZ
-        	{
-        		//parse
-        		char* temp;
-        		char* pch;
-        		char* date[2];
-        		strcpy(temp, rec_web_data.c_str());
-        		pch = strtok(temp, ":");
-        		for(int i=0; i<2; i++)
-        		{
-				date[i] = pch;
-				pch = strtok (NULL, ": ");
-			}
-        		//send request
-        		getRoomScheduleDate(roomid.c_str(), date[1], res, conn, connection);
-        	}
-        	else if(rec_web_data.compare(0,6,"RESERVE")==0)	//I WANT TO RESERVE A ROOM
-        	{
-        		//parse
-        		char* temp;
-        		char* pch;
-        		char* date[3];
-        		strcpy(temp, rec_web_data.c_str());
-        		pch = strtok(temp, ":");
-        		for(int i=0; i<3; i++)
-        		{
-				date[i] = pch;
-				pch = strtok (NULL, ": ");
-			}
-        		//send request
-        		
-        	}
-        	else if(rec_web_data.compare(0,5,"DELETE")==0)	//I WANT TO DELETE A RESERVATION
-        	{
-        		//parse
-        		
-        		//send request
-        	}
-        	else if(rec_web_data.compare(0,4,"GETIP")==0)	//GIVE ME THE IP TO THE COMPUTER RAWR
-        	{
-        		
-        	}
-        }
-=======
         }
         else //else this is extradata territory, a command to do something, parse and work magic
         {
@@ -360,10 +305,9 @@ void *deviceThread(void *threadid)
         	}
         	else if(rec_web_data.compare(0,4,"GETIP")==0)	//GIVE ME THE IP TO THE COMPUTER RAWR
         	{
-        		
+        		getIP(roomid.c_str(), res, conn, connection);
         	}
         }
->>>>>>> 41dc06000629f72afd4a24ab34c131d4f1f191d9
         
       }
       	    PQfinish(conn);
@@ -404,15 +348,6 @@ static void getRoomSchedule(char* roomid, PGresult *res, PGconn *conn, socketLin
 	{
 		char* row;
 		char temp0[256] = "";
-<<<<<<< HEAD
-		
-		row = PQgetvalue(res, i, 0);
-		parseString(row, temp0);
-		
-		//Replace with code to send to phone.
-		printf("%s\n", temp0);
-	}
-=======
 
 		row = PQgetvalue(res, i, 0);
 		parseString(row, temp0);
@@ -423,7 +358,6 @@ static void getRoomSchedule(char* roomid, PGresult *res, PGconn *conn, socketLin
 	}
 	string message("Done");
 	connection.send(message);
->>>>>>> 41dc06000629f72afd4a24ab34c131d4f1f191d9
 	PQclear(res);
 }
 
@@ -448,12 +382,6 @@ static void getRoomScheduleDate(char* roomid, char* date, PGresult *res, PGconn 
 		
 		row = PQgetvalue(res, i, 0);
 		parseString(row, temp0);
-<<<<<<< HEAD
-		
-		//Replace with code to send to phone.
-		printf("%s\n", temp0);
-	}
-=======
 		string message(temp0);
 		//Replace with code to send to phone.
 		connection.send(message);
@@ -461,12 +389,11 @@ static void getRoomScheduleDate(char* roomid, char* date, PGresult *res, PGconn 
 	}
 	string message("Done");
 	connection.send(message);
->>>>>>> 41dc06000629f72afd4a24ab34c131d4f1f191d9
 	PQclear(res);
 }
 
-// Does same as getRoomSchedule but takes in additional start and end parameters.
-static void getRoomScheduleDate(char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection)
+// used as a check for reserving rooms
+static bool getRoomScheduleDate(char* roomid, char* start, char* end, PGresult *res, PGconn *conn)
 {
 	char* temp = "SELECT getRoomScheduleTime($1, $2, $3);";
 	const char* paramValues[3];
@@ -480,29 +407,12 @@ static void getRoomScheduleDate(char* roomid, char* start, char* end, PGresult *
 	res = PQexecParams(conn, temp, 3, NULL, paramValues, NULL, paramFormat, 0); 
 	
 	int j = PQntuples(res);
-	
-	for(int i = 0; i < j; i++)
-	{
-		char* row;
-		char temp0[256] = "";
-		
-		row = PQgetvalue(res, i, 0);
-		parseString(row, temp0);
-<<<<<<< HEAD
-		
-		//Replace with code to send to phone.
-		printf("%s\n", temp0);
-	}
-=======
-		string message(temp0);
-		//Replace with code to send to phone.
-		connection.send(message);
-		//printf("%s\n", temp0);
-	}
-	string message("Done");
-	connection.send(message);
->>>>>>> 41dc06000629f72afd4a24ab34c131d4f1f191d9
 	PQclear(res);
+	if (j==0)
+		return true;
+	else
+		return false;
+	
 }
 
 // Does same as getRoomSchedule but takes in userid instead.
@@ -524,13 +434,6 @@ static void getUserSchedule(char* userid, PGresult *res, PGconn *conn, socketLin
 		
 		row = PQgetvalue(res, i, 0);
 		parseString(row, temp0);
-<<<<<<< HEAD
-		
-		//Replace with code to send to phone.
-		printf("%s\n", temp0);
-	}
-	PQclear(res);
-=======
 		string message(temp0);
 		//Replace with code to send to phone.
 		connection.send(message);
@@ -543,43 +446,83 @@ static void getUserSchedule(char* userid, PGresult *res, PGconn *conn, socketLin
 
 static void reserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection)
 {
-	char* temp = "INSERT INTO reservation($1, $2, $3, $4);";
-	const char* paramValues[4];
-	paramValues[0] = userid;
-	paramValues[1] = roomid;
-	paramValues[2] = start;
-	paramValues[3] = end;
-	int paramFormat[4];
-	paramFormat[0] = 0;
-	paramFormat[1] = 0;
-	paramFormat[2] = 0;
-	paramFormat[3] = 0;
-	res = PQexecParams(conn, temp, 1, NULL, paramValues, NULL, paramFormat, 0);
-	
-	PQclear(res);
-	
-	
+	if(getRoomScheduleDate(roomid, start, end, res, conn))
+	{
+		char* temp = "INSERT INTO reservation($1, $2, $3, $4);";
+		const char* paramValues[4];
+		paramValues[0] = userid;
+		paramValues[1] = roomid;
+		paramValues[2] = start;
+		paramValues[3] = end;
+		int paramFormat[4];
+		paramFormat[0] = 0;
+		paramFormat[1] = 0;
+		paramFormat[2] = 0;
+		paramFormat[3] = 0;
+		res = PQexecParams(conn, temp, 4, NULL, paramValues, NULL, paramFormat, 0);
+		PQclear(res);
+		string message("Win");
+		connection.send(message);
+		return;
+	}
+	else
+	{
+		string message("Fail,Time slot is already taken");
+		connection.send(message);
+		return;
+	}
 }
 
 static void unreserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection)
 {
-	char* temp = "DELETE FROM reservation WHERE reservation.user_id = $1 AND reservation.room_id = $2 AND reservation.reserve_start = $3 AND reservation.reserve_ned = $4;";
-	const char* paramValues[4];
-	paramValues[0] = userid;
-	paramValues[1] = roomid;
-	paramValues[2] = start;
-	paramValues[3] = end;
-	int paramFormat[4];
-	paramFormat[0] = 0;
-	paramFormat[1] = 0;
-	paramFormat[2] = 0;
-	paramFormat[3] = 0;
-	res = PQexecParams(conn, temp, 1, NULL, paramValues, NULL, paramFormat, 0);
+	if(getRoomScheduleDate(roomid, start, end, res, conn))
+	{
+		string message("Fail,no such reservation");
+		connection.send(message);
+		return;
+	}
+	else
+	{
+		char* temp = "DELETE FROM reservation WHERE reservation.user_id = $1 AND reservation.room_id = $2 AND reservation.reserve_start = $3 AND reservation.reserve_ned = $4;";
+		const char* paramValues[4];
+		paramValues[0] = userid;
+		paramValues[1] = roomid;
+		paramValues[2] = start;
+		paramValues[3] = end;
+		int paramFormat[4];
+		paramFormat[0] = 0;
+		paramFormat[1] = 0;
+		paramFormat[2] = 0;
+		paramFormat[3] = 0;
+		res = PQexecParams(conn, temp, 4, NULL, paramValues, NULL, paramFormat, 0);
+		PQclear(res);
+		string message("Win");
+		connection.send(message);
+		return;
+	}
+	
+}
 
-	PQclear(res);
-	
-	
->>>>>>> 41dc06000629f72afd4a24ab34c131d4f1f191d9
+static void getIP(char* roomid, PGresult *res, PGconn* conn, socketLink connection)
+{
+	char* temp = "SELECT room.computer_ip FROM room WHERE room.room_id = $1";
+	const char* paramValues[1];
+	paramValues[0] = roomid;
+	int paramFormat[1];
+	paramFormat[0] = 0;
+	res = PQexecParams(conn, temp, 1, NULL, paramValues, NULL, paramFormat, 0);
+	if (PQntuples(res)==0)
+	{
+		string message("NSC");
+		connection.send(message);
+	}
+	else
+	{
+		char* row;
+		row = PQgetvalue(res, 0, 0);
+		string message(row);
+		connection.send(message);
+	}
 }
 
 // Quits the connection to the database.
