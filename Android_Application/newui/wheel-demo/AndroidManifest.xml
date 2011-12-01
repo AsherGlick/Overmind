@@ -5,7 +5,7 @@
       android:versionCode="1"
       android:versionName="1.0">
       
-    <application android:icon="@drawable/wheel" android:label="WheelDemo" android:name="kankan.wheel.demo.globalVarsApp">
+    <application android:icon="@drawable/wheel" android:label="WheelDemo" android:name="kankan.wheel.demo.globalVarsApp" android:debuggable="true">
 
 		<activity android:name="kankan.wheel.demo.LaunchActivity" android:screenOrientation="portrait">
 		    <intent-filter>
