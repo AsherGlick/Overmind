@@ -363,11 +363,11 @@ static void getRoomSchedule(char* roomid, PGresult *res, PGconn *conn, socketLin
 		parseString(row, temp0);
 		string message(temp0);
 		//Replace with code to send to phone.
-		connection.send(message);
+		connection.sendData(message);
 		//printf("%s\n", temp0);
 	}
 	string message("Done");
-	connection.send(message);
+	connection.sendData(message);
 	PQclear(res);
 }
 
@@ -394,11 +394,11 @@ static void getRoomScheduleDate(char* roomid, char* date, PGresult *res, PGconn 
 		parseString(row, temp0);
 		string message(temp0);
 		//Replace with code to send to phone.
-		connection.send(message);
+		connection.sendData(message);
 		//printf("%s\n", temp0);
 	}
 	string message("Done");
-	connection.send(message);
+	connection.sendData(message);
 	PQclear(res);
 }
 
@@ -446,11 +446,11 @@ static void getUserSchedule(char* userid, PGresult *res, PGconn *conn, socketLin
 		parseString(row, temp0);
 		string message(temp0);
 		//Replace with code to send to phone.
-		connection.send(message);
+		connection.sendData(message);
 		//printf("%s\n", temp0);
 	}
 	string message("Done");
-	connection.send(message);
+	connection.sendData(message);
 	PQclear(res);
 }
 
@@ -472,13 +472,13 @@ static void reserve(char* userid, char* roomid, char* start, char* end, PGresult
 		res = PQexecParams(conn, temp, 4, NULL, paramValues, NULL, paramFormat, 0);
 		PQclear(res);
 		string message("Win");
-		connection.send(message);
+		connection.sendData(message);
 		return;
 	}
 	else
 	{
 		string message("Fail,Time slot is already taken");
-		connection.send(message);
+		connection.sendData(message);
 		return;
 	}
 }
@@ -488,7 +488,7 @@ static void unreserve(char* userid, char* roomid, char* start, char* end, PGresu
 	if(getRoomScheduleDate(roomid, start, end, res, conn))
 	{
 		string message("Fail,no such reservation");
-		connection.send(message);
+		connection.sendData(message);
 		return;
 	}
 	else
@@ -507,7 +507,7 @@ static void unreserve(char* userid, char* roomid, char* start, char* end, PGresu
 		res = PQexecParams(conn, temp, 4, NULL, paramValues, NULL, paramFormat, 0);
 		PQclear(res);
 		string message("Win");
-		connection.send(message);
+		connection.sendData(message);
 		return;
 	}
 	
@@ -524,14 +524,14 @@ static void getIP(char* roomid, PGresult *res, PGconn* conn, socketLink connecti
 	if (PQntuples(res)==0)
 	{
 		string message("NSC");
-		connection.send(message);
+		connection.sendData(message);
 	}
 	else
 	{
 		char* row;
 		row = PQgetvalue(res, 0, 0);
 		string message(row);
-		connection.send(message);
+		connection.sendData(message);
 	}
 }
 
