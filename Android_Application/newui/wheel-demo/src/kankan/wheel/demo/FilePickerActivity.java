@@ -17,6 +17,7 @@ import android.os.Environment;
 
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,6 +29,8 @@ public class FilePickerActivity extends ListActivity {
 	ArrayList<String> compPowerpoints = new ArrayList<String>();
 	ArrayList<String> sdPowerpoints = new ArrayList<String>();
 	ArrayAdapter<String> fileList;
+	
+	ListView list;
 	
     /** Called when the activity is first created. */
     @Override
@@ -44,18 +47,29 @@ public class FilePickerActivity extends ListActivity {
         
         
         //ListView list = (ListView)findViewById(android.R.id.list);
-        ListView list = getListView();
+        list = getListView();
         //list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-			@Override
-			public void onItemClick(AdapterView<?> adapterView, View v, int pos,
-					long id) {
-				// TODO Auto-generated method stub
-				//whatWasClicked(pos);
-				//setContentView(R.layout.ppt_switch);
-			}
-        });
     }
+    
+    /*list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+		@Override
+		public void onItemClick(AdapterView<?> adapterView, View v, int pos,
+				long id) {
+			// TODO Auto-generated method stub
+			//whatWasClicked(pos);
+			//setContentView(R.layout.ppt_switch);
+		}
+    });*/
+    
+    public OnItemClickListener tester = new OnItemClickListener(){
+		@Override
+		public void onItemClick(AdapterView<?> adapterView, View v, int pos, long id) {
+			// TODO Auto-generated method stub
+			//whatWasClicked(pos);
+			//setContentView(R.layout.ppt_switch);
+			
+		}
+    };
     
     public void whatWasClicked(int pos) {
     	Toast.makeText(this, "Hello", Toast.LENGTH_LONG).show();
