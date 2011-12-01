@@ -29,6 +29,8 @@ public class FilePickerActivity extends ListActivity {
 	
 	globalVarsApp appState;
 	
+	String selectedFileName;
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,7 @@ public class FilePickerActivity extends ListActivity {
 	private BufferedReader fromServer;
 	private Socket socket;
 	/********************************** SEND DATA *********************************\
-	| This function sends the data 
+	| This function sends the data                                                 |
 	\******************************************************************************/
     public void sendData(String data) {
     	try 
@@ -95,7 +97,10 @@ public class FilePickerActivity extends ListActivity {
 		String item = (String) getListAdapter().getItem(position);
 		Toast.makeText(this, item + " selected", Toast.LENGTH_LONG).show();
 		
+		//selectedFileName = item;
+		
 		createConnection(appState.ipAddress,appState.portNumber);
+		sendData("OPEN|"+item);
 		
 		setContentView(R.layout.ppt_switch);
 	}
@@ -128,8 +133,8 @@ public class FilePickerActivity extends ListActivity {
 	public ArrayList<String> getPptsOnComputer()
     {
 		ArrayList<String> fakeList = new ArrayList<String>();	
-		fakeList.add("windowsPresentation.ppt");
-		fakeList.add("presentationOkay.ppt");
+		fakeList.add("test.pptx");
+		fakeList.add("placeholder.ppt");
 		return fakeList;
     }
 	  //////////////////////////////////////////////////////////////////////////////
