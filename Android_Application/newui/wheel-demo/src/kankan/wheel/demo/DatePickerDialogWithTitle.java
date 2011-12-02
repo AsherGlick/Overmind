@@ -2,7 +2,6 @@ package kankan.wheel.demo;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.widget.DatePicker;
 

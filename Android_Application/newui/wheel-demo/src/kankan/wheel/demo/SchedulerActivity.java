@@ -126,7 +126,10 @@ public class SchedulerActivity extends Activity {
                 setDate(false);
             }
    */
-    
+    /****************************** DATE SET LISTENER *****************************\
+    | waits for an element of the list to be selected                              |
+    \******************************************************************************/
+
     // the callback received when the user "sets" the date in the dialog
     private DatePickerDialogWithTitle.OnDateSetListener mDateSetListener =
             new DatePickerDialogWithTitle.OnDateSetListener() {

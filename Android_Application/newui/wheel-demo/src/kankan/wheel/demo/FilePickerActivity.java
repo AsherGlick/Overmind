@@ -86,7 +86,7 @@ public class FilePickerActivity extends ListActivity {
     ///////////////////////////// PICK FILE FUNCTIONS ////////////////////////////
    //////////////////////////////////////////////////////////////////////////////
     /***************************** ON LIST ITEM CLICK *****************************\
-    | Listener function to 
+    | Listener function to detect when a file is selected                          |
     \******************************************************************************/
     @Override
 	protected void onListItemClick(ListView l, View v, int position, long id)
@@ -102,7 +102,9 @@ public class FilePickerActivity extends ListActivity {
 		
 		setContentView(R.layout.ppt_switch);
 	}
-    
+    /***************************** FILL LIST COMPUTER *****************************\
+    | this fills the list of files from the computer                               |
+    \******************************************************************************/
     public void fillListComputer(View v)
     {
     	combinedList.clear();
@@ -124,10 +126,18 @@ public class FilePickerActivity extends ListActivity {
     	
     	return;
     }
+    /********************************* REMOVE LIST ********************************\
+    | clears the entire list                                                       |
+    \******************************************************************************/
     public void removeList(ArrayList<String> rem)
     {
     	combinedList.removeAll(rem);
     }
+    /************************* GET POWERPOINTS ON COMPUTER ************************\
+    | Finds the list of powerpoints that are on the computer, currently this       |
+    | function does not communicate with the computer so it fills the list with    |
+    | fake files                                                                   |
+    \******************************************************************************/
 	public ArrayList<String> getPptsOnComputer()
     {
 		ArrayList<String> fakeList = new ArrayList<String>();	
