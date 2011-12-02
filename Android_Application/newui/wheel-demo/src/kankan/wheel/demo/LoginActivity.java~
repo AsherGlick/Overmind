@@ -89,7 +89,7 @@ public class LoginActivity extends Activity {
     \******************************************************************************/
     public void parseQRVersionOne(String contents) {
     	// sample qr code text
-	// http://projectovermind.com/getreader#OVRMND1:128.113.140.78:80:1:sage3202
+		// http://projectovermind.com/getreader#OVRMND1:128.113.140.78:80:1:sage3202
     	// example of code passed to the function
     	// 128.113.140.78:80:1:sage3202
     	String ipAddress = "0.0.0.0";

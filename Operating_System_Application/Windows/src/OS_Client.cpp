@@ -21,13 +21,6 @@
 using namespace std;
 
 /*
-void* open_ppt(void* arg)
-{
-	char* name = (char*)arg;
-	execlp("C:/Program Files (x86)/Microsoft Office/Office12/POWERPNT.exe", "POWERPNT.exe", "/N", name, NULL);
-	return 0;
-}*/
-/*
  * main
  * starts the OS client on the background.
  * Due to the length of the main function, there will be comments within the function.
@@ -48,9 +41,8 @@ int main(void)
 	
 	while(true)
 	{
+		//variable initiations;
 		WSADATA wsaData;
-		//int test;
-	
 		SOCKET ListenSocket = INVALID_SOCKET;
 		SOCKET ClientSocket = INVALID_SOCKET;
 	
@@ -76,8 +68,6 @@ int main(void)
 		serverS.ai_flags = AI_PASSIVE;
 		
 		//Set up the address and port.
-		//test = getaddrinfo(NULL, port, &server, &listen);
-		//if (test != 0)
 		if (getaddrinfo(NULL, port, &serverS, &listenS))
 		{
 			cerr << "getaddrinfo failed" << endl;
@@ -128,17 +118,18 @@ int main(void)
 			return 1;
 		}
 		closesocket(ListenSocket);
-			// Keep doing the commands the phone sends.
+		// Keep doing the commands the phone sends.
 		Application* app = new PowerPointApp();
 		char filename[buffer_len];
 		char filesz[buffer_len];
 		int received = 1;
-		do
+		do 	//this while connection is not closed
 		{
 			received = recv(ClientSocket, buffer, buffer_len, 0);
 			if (received > 0)
 			{
 				printf("%s\n", buffer);
+				//act upon recieved messaged
 				if(strncmp(buffer, "OPEN", 4)==0)
 				{
 					//Code to display powerpoints
@@ -147,19 +138,16 @@ int main(void)
 					tx = strtok(NULL, "|");
 					strcpy(filename, tx);
 					pid_t pid = fork();
-					//printf("%d\n", pid);
 					if (pid < 0)
 					{
 						perror( "fork failed\n");
 					}
-						else if( pid == 0)
-						{
-							execlp("C:/Program Files (x86)/Microsoft Office/Office12/POWERPNT.exe", "POWERPNT.exe", "/N", filename, NULL);
-						}
-						else
-						{
-						}
+					else if( pid == 0)
+					{
+						execlp("C:/Program Files (x86)/Microsoft Office/Office12/POWERPNT.exe", "POWERPNT.exe", "/N", filename, NULL);
+					}
 				}
+				//reacts to a file
 				else if(strncmp(buffer, "FILE", 4)==0)
 				{
 					received = recv(ClientSocket, buffer, buffer_len, 0);
@@ -179,7 +167,6 @@ int main(void)
 						write(output, buffer, received);
 					}
 					pid_t pid = fork();
-					//printf("%d\n", pid);
 					if (pid < 0)
 					{
 						perror( "fork failed\n");
@@ -187,9 +174,6 @@ int main(void)
 					else if( pid == 0)
 					{
 						execlp("C:/Program Files (x86)/Microsoft Office/Office12/POWERPNT.exe", "POWERPNT.exe", "/N", filename, NULL);
-					}
-					else
-					{
 					}
 				}
 				else

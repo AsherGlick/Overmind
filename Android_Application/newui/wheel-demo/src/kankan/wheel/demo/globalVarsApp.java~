@@ -1,4 +1,4 @@
-package overmind.android.application;
+package kankan.wheel.demo;
 
 import android.app.Application;
 

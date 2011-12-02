@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package overmind.android.application;
+package kankan.wheel.demo;
 
 /**
  * <p>Encapsulates the result of a barcode scan invoked through {@link IntentIntegrator}.</p>

@@ -18,8 +18,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-
-
 using namespace std;
 
 
@@ -61,6 +59,7 @@ int main ()
   pthread_create(&html_thread,NULL,htmlThread,NULL);*/
   while(true);
 }
+//to be implemented later
 /*
 void * htmlThread (void*)
 {
@@ -304,44 +303,29 @@ void *deviceThread(void *threadid)
         		pch = strtok(temp, ":");
         		for(int i=0; i<3; i++)
         		{
-				date[i] = pch;
-				pch = strtok (NULL, ": ");
-			}
+			      	date[i] = pch;
+			      	pch = strtok (NULL, ": ");
+			      }
         		//send request
-        		char sendtemp1[256];
-        		strcpy(sendtemp1, username.c_str());
-        		char sendtemp2[256];
-        		strcpy(sendtemp2, roomid.c_str());
-        		unreserve(sendtemp1, sendtemp2, date[1], date[2], res, conn, connection);
+        		unreserve(username.c_str(), roomid.c_str(), date[1], date[2], res, conn, connection)
         	}
         	else if(rec_web_data.compare(0,4,"GETIP")==0)	//GIVE ME THE IP TO THE COMPUTER RAWR
         	{
-        		char sendtemp[256];
-        		strcpy(sendtemp, roomid.c_str());
-        		getIP(sendtemp, res, conn, connection);
-        		rec_web_data = connection.waitData();
-        		if(rec_web_data.compare(0,3, "YES")==0)
-        		{
-        			//connection is fine, do nothing
-        		}
-        		else
-        		{
-        			//connection failed, connect to computer and pipe thru
-        			
-        		}
+        		getIP(roomid.c_str(), res, conn, connection);
         	}
         }
         
       }
-      PQfinish(conn);
-      cout << "[DEVICE]: Closed connection" << endl;
-      return 0;
-    }
-  }
+      	    PQfinish(conn);
+	    cout << "[DEVICE]: Closed connection" << endl;
+	    return 0;
+	  }
+	}
 	// End Waiting for connections
-  return 0;
+	return 0;
 }
 
+//Parses a string to remove quotation marks
 static void parseString(char* temp, char* temp0)
 {
 	char* pch;
@@ -387,6 +371,7 @@ static void getRoomSchedule(char* roomid, PGresult *res, PGconn *conn, socketLin
 // Does same as getRoomSchedule but takes in an additional date parameter.
 static void getRoomScheduleDate(char* roomid, char* date, PGresult *res, PGconn *conn, socketLink connection)
 {
+	//format message to database
 	char* temp = "SELECT getRoomScheduleDate($1, $2);";
 	const char* paramValues[2];
 	paramValues[0] = roomid;
@@ -394,10 +379,9 @@ static void getRoomScheduleDate(char* roomid, char* date, PGresult *res, PGconn 
 	int paramFormat[2];
 	paramFormat[0] = 0;
 	paramFormat[1] = 0;
+	//send message to database
 	res = PQexecParams(conn, temp, 2, NULL, paramValues, NULL, paramFormat, 0); 
-	
 	int j = PQntuples(res);
-	
 	for(int i = 0; i < j; i++)
 	{
 		char* row;
@@ -406,18 +390,21 @@ static void getRoomScheduleDate(char* roomid, char* date, PGresult *res, PGconn 
 		row = PQgetvalue(res, i, 0);
 		parseString(row, temp0);
 		string message(temp0);
-		//Replace with code to send to phone.
+		//send data to phone
 		connection.sendData(message);
 		//printf("%s\n", temp0);
 	}
+	//send complete message to phone
 	string message("Done");
 	connection.sendData(message);
 	PQclear(res);
 }
 
-// used as a check for reserving rooms
+// used as a check for reserving rooms, returns true if such no such schedule exists , false otherwise
+
 static bool getRoomScheduleDate(char* roomid, char* start, char* end, PGresult *res, PGconn *conn)
 {
+	//format message to database
 	char* temp = "SELECT getRoomScheduleTime($1, $2, $3);";
 	const char* paramValues[3];
 	paramValues[0] = roomid;
@@ -427,8 +414,8 @@ static bool getRoomScheduleDate(char* roomid, char* start, char* end, PGresult *
 	paramFormat[0] = 0;
 	paramFormat[1] = 0;
 	paramFormat[2] = 0;
+	//send message
 	res = PQexecParams(conn, temp, 3, NULL, paramValues, NULL, paramFormat, 0); 
-	
 	int j = PQntuples(res);
 	PQclear(res);
 	if (j==0)
@@ -441,15 +428,16 @@ static bool getRoomScheduleDate(char* roomid, char* start, char* end, PGresult *
 // Does same as getRoomSchedule but takes in userid instead.
 static void getUserSchedule(char* userid, PGresult *res, PGconn *conn, socketLink connection)
 {
+	//format message to database
 	char* temp = "SELECT getRoomScheduleTime($1);";
 	const char* paramValues[1];
 	paramValues[0] = userid;
 	int paramFormat[1];
 	paramFormat[0] = 0;
+	//send message
 	res = PQexecParams(conn, temp, 1, NULL, paramValues, NULL, paramFormat, 0); 
-	
 	int j = PQntuples(res);
-	
+	//parse through results and send to phone
 	for(int i = 0; i < j; i++)
 	{
 		char* row;
@@ -458,7 +446,7 @@ static void getUserSchedule(char* userid, PGresult *res, PGconn *conn, socketLin
 		row = PQgetvalue(res, i, 0);
 		parseString(row, temp0);
 		string message(temp0);
-		//Replace with code to send to phone.
+		//send data to phone
 		connection.sendData(message);
 		//printf("%s\n", temp0);
 	}
@@ -469,12 +457,13 @@ static void getUserSchedule(char* userid, PGresult *res, PGconn *conn, socketLin
 
 static void reserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection)
 {
+	cout<<"Reserve is called"<<endl;
 	if(getRoomScheduleDate(roomid, start, end, res, conn))
 	{
-		char* temp = "INSERT INTO reservation($1, $2, $3, $4);";
+		char* temp = "INSERT INTO reservation VALUES($1, $2, $3, $4);";
 		const char* paramValues[4];
-		paramValues[0] = userid;
-		paramValues[1] = roomid;
+		paramValues[0] = roomid;
+		paramValues[1] = userid;
 		paramValues[2] = start;
 		paramValues[3] = end;
 		int paramFormat[4];
@@ -486,12 +475,14 @@ static void reserve(char* userid, char* roomid, char* start, char* end, PGresult
 		PQclear(res);
 		string message("Win");
 		connection.sendData(message);
+
 		return;
 	}
 	else
 	{
-		string message("Fail,Time slot is already taken");
+		string message("Fail, Time slot is already taken");
 		connection.sendData(message);
+
 		return;
 	}
 }
@@ -500,13 +491,15 @@ static void unreserve(char* userid, char* roomid, char* start, char* end, PGresu
 {
 	if(getRoomScheduleDate(roomid, start, end, res, conn))
 	{
-		string message("Fail,no such reservation");
+		string message("Fail, no such reservation");
 		connection.sendData(message);
+
 		return;
 	}
 	else
 	{
-		char* temp = "DELETE FROM reservation WHERE reservation.user_id = $1 AND reservation.room_id = $2 AND reservation.reserve_start = $3 AND reservation.reserve_ned = $4;";
+		char* temp = "DELETE FROM reservation WHERE reservation.user_id = $1 AND reservation.room_id = $2 AND reservation.start_time = $3 AND reservation.end_time = $4;";
+
 		const char* paramValues[4];
 		paramValues[0] = userid;
 		paramValues[1] = roomid;
@@ -523,7 +516,7 @@ static void unreserve(char* userid, char* roomid, char* start, char* end, PGresu
 		connection.sendData(message);
 		return;
 	}
-	
+
 }
 
 static void getIP(char* roomid, PGresult *res, PGconn* conn, socketLink connection)
@@ -538,6 +531,7 @@ static void getIP(char* roomid, PGresult *res, PGconn* conn, socketLink connecti
 	{
 		string message("NSC");
 		connection.sendData(message);
+
 	}
 	else
 	{
@@ -554,46 +548,3 @@ static void exit_nicely(PGconn *conn)
     PQfinish(conn);
     exit(1);
 }
-
-/*
- * This function prints a query result that is a binary-format fetch from
- * a table defined as in the comment above.  We split it out because the
- * main() function uses it twice.
- */
-
-/*
-int
-main(int argc, char **argv)
-{
-    const char *conninfo;
-    PGconn     *conn;
-    PGresult   *res;
-
-    
-     * If the user supplies a parameter on the command line, use it as the
-     * conninfo string; otherwise default to setting dbname=postgres and using
-     * environment variables or defaults for all other connection parameters.
-     
-    if (argc > 1)
-        conninfo = argv[1];
-    else
-        conninfo = "host=server.projectovermind.com port=5432 dbname=roommanager user=overmind password=chexmix";
-
-    // Make a connection to the database 
-    conn = PQconnectdb(conninfo);
-
-    // Check to see that the backend connection was successfully made 
-    if (PQstatus(conn) != CONNECTION_OK)
-    {
-        fprintf(stderr, "Connection to database failed: %s",
-                PQerrorMessage(conn));
-        exit_nicely(conn);
-    }
-
-    getRoomSchedule("123",res,conn);
-    // close the connection to the database and cleanup 
-    PQfinish(conn);
-
-    return 0;
-}
-*/
