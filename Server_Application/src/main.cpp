@@ -177,7 +177,7 @@ void *deviceThread(void *threadid)
   PGresult   *res;
   
   //connect to DB
-  conninfo = "host=server.projectovermind.com port=8000 dbname=roommanager user=overmind password=chexmix";
+  conninfo = "host=localhost port=5432 dbname=roommanager user=overmind password=chexmix";
   conn = PQconnectdb(conninfo);
   //check connection, fail if connection fails
   if (PQstatus(conn) != CONNECTION_OK)
@@ -224,28 +224,26 @@ void *deviceThread(void *threadid)
         //MYSCH
         //ROOMSCH
         
-	//Conditions for getting the user's schedules here:
-	
-	/*
-		HUEHUEHUEHUEHUEHUEHUE
-	*/
+      	//Conditions for getting the user's schedules here:
+
         
         if (rec_web_data.compare(0,3,"VER")==0)//This is the version number, print for lulz
         {
         	cout<<rec_web_data;
         	rec_num=1;
         }
-        else if (rec_num==1) // This is the 2nd thing recieved from the phone after version, the user name, save this
+        // This is the 2nd thing recieved from the phone after version, the user name, save this
+        else if (rec_num==1)
         {
         	username = rec_web_data;
         	rec_num++;
         }
         else if (rec_num==2) // This is the 3rd thing recieved from the phone, this is the type of QR scanned, computer or room for now, save
-        {
-        	type = rec_web_data;
-        	rec_num++;
-        }
-        else if (rec_num==3) // this is the 4th thing recieved from the phone, this is the room number, save
+        //{
+        //	type = rec_web_data;
+       // 	rec_num++;
+        //}
+        //else if (rec_num==3) // this is the 4th thing recieved from the phone, this is the room number, save
         {
         	roomid = rec_web_data;
         	rec_num++;
@@ -268,19 +266,19 @@ void *deviceThread(void *threadid)
         		pch = strtok(temp, ":");
         		for(int i=0; i<2; i++)
         		{
-				date[i] = pch;
-				pch = strtok (NULL, ": ");
-			}
-        		//send request
-        		char sendtemp[256];
-        		strcpy(sendtemp, roomid.c_str());
-        		getRoomScheduleDate(sendtemp, date[1], res, conn, connection);
-        	}
-        	else if(rec_web_data.compare(0,6,"RESERVE")==0)	//I WANT TO RESERVE A ROOM
-        	{
-        		//parse
-        		char temp[256];
-        		char* pch;
+				      date[i] = pch;
+				      pch = strtok (NULL, ": ");
+			      }
+            //send request
+            char sendtemp[256];
+            strcpy(sendtemp, roomid.c_str());
+            getRoomScheduleDate(sendtemp, date[1], res, conn, connection);
+          }
+          else if(rec_web_data.compare(0,6,"RESERVE")==0)	//I WANT TO RESERVE A ROOM
+          {
+            //parse
+          	char temp[256];
+          	char* pch;
         		char* date[3];
         		strcpy(temp, rec_web_data.c_str());
         		pch = strtok(temp, ":");

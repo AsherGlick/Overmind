@@ -54,7 +54,7 @@ public class FilePickerActivity extends ListActivity {
 	private BufferedReader fromServer;
 	private Socket socket;
 	/********************************** SEND DATA *********************************\
-	| This function sends the data                                                 |
+	| This function sends the data over the opened socket's data inputstream       |
 	\******************************************************************************/
     public void sendData(String data) {
     	try 
@@ -90,6 +90,9 @@ public class FilePickerActivity extends ListActivity {
      //////////////////////////////////////////////////////////////////////////////
     ///////////////////////////// PICK FILE FUNCTIONS ////////////////////////////
    //////////////////////////////////////////////////////////////////////////////
+    /***************************** ON LIST ITEM CLICK *****************************\
+    | Listener function to 
+    \******************************************************************************/
     @Override
 	protected void onListItemClick(ListView l, View v, int position, long id)
     {
