@@ -5,36 +5,30 @@ import kankan.wheel.widget.OnWheelChangedListener;
 import kankan.wheel.widget.OnWheelClickedListener;
 import kankan.wheel.widget.OnWheelScrollListener;
 import kankan.wheel.widget.WheelView;
-import kankan.wheel.widget.adapters.AbstractWheelTextAdapter;
 import kankan.wheel.widget.adapters.ArrayWheelAdapter;
 import kankan.wheel.widget.adapters.NumericWheelAdapter;
 
 import kankan.wheel.demo.DatePickerDialogWithTitle;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
 
 
-import java.io.BufferedReader;
+//import java.io.BufferedReader;// to implement later
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 //import android.content.Context;
 //import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 //import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 public class SchedulerActivity extends Activity {
@@ -50,7 +44,6 @@ public class SchedulerActivity extends Activity {
     DatePickerDialogWithTitle datePickDialog;
     
 	// Time changed flag
-	private boolean timeChanged = false;
 	
 	// Time scrolled flag
 	private boolean timeScrolled = false;
@@ -83,7 +76,7 @@ public class SchedulerActivity extends Activity {
     /////////////////// SOCKET COMMUNICATION FUNCTIONS (SHARED) //////////////////
    //////////////////////////////////////////////////////////////////////////////
 	private DataOutputStream toServer;
-	private BufferedReader fromServer;
+	//private BufferedReader fromServer;// to implement later
 	private Socket socket;
 	/********************************** SEND DATA *********************************\
 	| This function sends the data over the opened socket's data inputstream       |
@@ -318,10 +311,6 @@ public class SchedulerActivity extends Activity {
 				
 				
 				if (!timeScrolled) {
-					timeChanged = true;
-					//picker.setCurrentHour(hours.getCurrentItem());
-					//picker.setCurrentMinute(mins.getCurrentItem());
-					timeChanged = false;
 				}
 			}
 		};
@@ -345,10 +334,8 @@ public class SchedulerActivity extends Activity {
 			}
 			public void onScrollingFinished(WheelView wheel) {
 				timeScrolled = false;
-				timeChanged = true;
 				//picker.setCurrentHour(hours.getCurrentItem());
 				//picker.setCurrentMinute(mins.getCurrentItem());
-				timeChanged = false;
 			}
 		};
 		
@@ -492,8 +479,8 @@ public class SchedulerActivity extends Activity {
     \******************************************************************************/
     public void reserveRoom(String timeStart, String timeEnd)
     {
-    	String temp;
-    	String[] recievedMessage;
+    	//String temp;
+    	//String[] recievedMessage;
     	sendData("$VERSION1"+"$"+appState.username+"$fuckkkkkkkk"+"$"+appState.extraData+"$RESERVE|"+ timeStart + "|" + timeEnd);
     	/*try
     	{

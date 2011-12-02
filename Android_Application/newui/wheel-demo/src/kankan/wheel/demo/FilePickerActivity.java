@@ -1,14 +1,9 @@
 package kankan.wheel.demo;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+//import java.io.BufferedReader;//to implement later
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
 
 import kankan.wheel.demo.R;
 import android.app.ListActivity;
@@ -51,7 +46,7 @@ public class FilePickerActivity extends ListActivity {
     /////////////////// SOCKET COMMUNICATION FUNCTIONS (SHARED) //////////////////
    //////////////////////////////////////////////////////////////////////////////
 	private DataOutputStream toServer;
-	private BufferedReader fromServer;
+	//private BufferedReader fromServer;// to implement later
 	private Socket socket;
 	/********************************** SEND DATA *********************************\
 	| This function sends the data over the opened socket's data inputstream       |
