@@ -160,166 +160,193 @@ void * htmlThread (void*)
 \******************************************************************************/
 void *deviceThread(void *threadid)
 {
-  // Bind Device Socket
-  string rec_web_data = "";
-  string port = "80";
-  
-  // store info from device
-  string username = "";
-  string roomid = "";
-  string type = "";
-  int rec_num=0;
-  
-  //DB connection
-  const char *conninfo;
-  PGconn     *conn;
-  PGresult   *res;
-  
-  //connect to DB
-  conninfo = "host=localhost port=5432 dbname=roommanager user=overmind password=chexmix";
-  conn = PQconnectdb(conninfo);
-  //check connection, fail if connection fails
-  if (PQstatus(conn) != CONNECTION_OK)
-  {
-       fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
-       exit_nicely(conn);
-  }
-  
-  
-  socketPort connectPort;
-  connectPort.bindPort(port); // From ashsockPP.h
-  cout << "[INFO] Bound Device Port " << port << endl;
-  // End Bind Device Socket
-  while (true)
-  {
-    // wait for a good socket connection, set it to clientSockFD
-    socketLink connection = connectPort.waitClient();
-    // fork after a client connects so the main program can handle another client
-    if (!fork())
-    {
-      cout << "[DEVICE]: Opened Connection on " << port << endl;
-      // Close the bound socket, we dont need to listen to it in the fork
-      while (connection.isOpen()){  
-        // while data is not recieved, continue waiting for data
-        rec_web_data = "";
-        //int count = 0;
-        while (rec_web_data == "")
-        {
-          //cout << "\r" << count;
-          //dcount ++;
-          rec_web_data = connection.waitData();
-          
-        }
-        cout << "[DEVICE]: Received data on device port [" << rec_web_data << "]" << endl;
-        //first thing recieved from device is version number, ignore
-        //2nd thing recieved from device is the username, save
-        //3rd thing recieved is the type: ie: computer room etc
-        //4th thing recieved is the room number, save
-        //anything more is extra data
-        //extradata will be in the format of 
-        //RESERVE:timestart:timeend
-        //DELETE:timestart:timeend
-        //ROOMDTE:date
-        //MYSCH
-        //ROOMSCH
-        
-      	//Conditions for getting the user's schedules here:
+	// Bind Device Socket
+	string rec_web_data = "";
+	string port = "80";
+	
+	// store info from device
+	string username = "";
+	string roomid = "";
+	string type = "";
 
-        
-        if (rec_web_data.compare(0,3,"VER")==0)//This is the version number, print for lulz
-        {
-        	cout<<rec_web_data;
-        	rec_num=1;
-        }
-        // This is the 2nd thing recieved from the phone after version, the user name, save this
-        else if (rec_num==1)
-        {
-        	username = rec_web_data;
-        	rec_num++;
-        }
-        else if (rec_num==2) // This is the 3rd thing recieved from the phone, this is the type of QR scanned, computer or room for now, save
-        //{
-        //	type = rec_web_data;
-       // 	rec_num++;
-        //}
-        //else if (rec_num==3) // this is the 4th thing recieved from the phone, this is the room number, save
-        {
-        	roomid = rec_web_data;
-        	rec_num++;
-        }
-        else //else this is extradata territory, a command to do something, parse and work magic
-        {
-        	if(rec_web_data.compare(0,6,"ROOMSCH")==0)	//I WANT THE ENTIRE ROOM SCHEDULE FROM NOW TO FOREVER
-        	{
-        		char sendtemp[256];
-        		strcpy(sendtemp, roomid.c_str());
-        		getRoomSchedule(sendtemp, res, conn, connection);
-        	}
-        	else if(rec_web_data.compare(0,6,"ROOMDTE")==0)	//I WANT THE ROOM SCHEDULE FOR JUST THIS DATE PLZ
-        	{
-        		//parse
-        		char temp[256];
-        		char* pch;
-        		char* date[2];
-        		strcpy(temp, rec_web_data.c_str());
-        		pch = strtok(temp, ":");
-        		for(int i=0; i<2; i++)
-        		{
-				      date[i] = pch;
-				      pch = strtok (NULL, ": ");
-			      }
-            //send request
-            char sendtemp[256];
-            strcpy(sendtemp, roomid.c_str());
-            getRoomScheduleDate(sendtemp, date[1], res, conn, connection);
-          }
-          else if(rec_web_data.compare(0,6,"RESERVE")==0)	//I WANT TO RESERVE A ROOM
-          {
-            //parse
-          	char temp[256];
-          	char* pch;
-        		char* date[3];
-        		strcpy(temp, rec_web_data.c_str());
-        		pch = strtok(temp, ":");
-        		for(int i=0; i<3; i++)
-        		{
-				date[i] = pch;
-				pch = strtok (NULL, ": ");
+	//DB connection
+	const char *conninfo;
+	PGconn     *conn;
+	PGresult   *res;
+
+	//connect to DB
+	conninfo = "host=localhost port=5432 dbname=roommanager user=overmind password=chexmix";
+	conn = PQconnectdb(conninfo);
+	//check connection, fail if connection fails
+	if (PQstatus(conn) != CONNECTION_OK)
+	{
+		fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
+		exit_nicely(conn);
+	}
+	cout<<"database is connected"<<endl;
+
+	socketPort connectPort;
+	connectPort.bindPort(port); // From ashsockPP.h
+	cout << "[INFO] Bound Device Port " << port << endl;
+	// End Bind Device Socket
+	while (true)
+	{
+		// wait for a good socket connection, set it to clientSockFD
+		socketLink connection = connectPort.waitClient();
+		// fork after a client connects so the main program can handle another client
+		if (!fork())
+		{
+			cout << "[DEVICE]: Opened Connection on " << port << endl;
+			// Close the bound socket, we dont need to listen to it in the fork
+			while (connection.isOpen()){  
+				// while data is not recieved, continue waiting for data
+				rec_web_data = "";
+				//int count = 0;
+				while (rec_web_data == "")
+				{
+				  //cout << "\r" << count;
+				  //dcount ++;
+					rec_web_data = connection.waitData();
+				  
+				}
+				
+				cout << "[DEVICE]: Received data on device port [" << rec_web_data << "]" << endl;
+				
+				//RESERVE:timestart:timeend
+				//DELETE:timestart:timeend
+				//ROOMDTE:date
+				//MYSCH
+				//ROOMSCH
+				char* temp;
+				string commands[10];
+				strcpy(temp, rec_web_data.c_str());
+				char* pch;
+				pch = strtok(temp,"$");
+				int numCommands =0;
+				//break up the commands
+				while(pch !=NULL)
+				{
+					commands[numCommands] = pch;
+					pch = strtok(NULL, "$");
+					numCommands++;
+				}
+				//read and act upon the commands
+				for(int j=0; j<numCommands; j++)
+				{
+					strcpy(temp, commands[j].c_str());
+					if(strncmp(temp, "VER", 3)==0)	//this is the version number, print it
+					{
+						cout<<"Connected withe version "<<temp<<endl;
+					}
+					else if(strncmp(temp, "USE", 3)==0)	//this is the username, store it
+					{
+						char* pch;
+						char* user[2];
+						pch = strtok(temp, "|");
+						for(int i=0; i<2; i++)
+						{
+							user[i] = pch;
+							pch = strtok (NULL, "|");
+						}
+						cout<<"User "<<user[1]<<" connected"<<endl;
+						username = user[1];
+					}
+					else if(strncmp(temp, "ROOM", 4)==0)	//this is the roomid, store it
+					{
+						char* pch;
+						char* room[2];
+						pch = strtok(temp, "|");
+						for(int i=0; i<2; i++)
+						{
+							room[i] = pch;
+							pch = strtok (NULL, "|");
+						}
+						cout<<"Room "<<room[1]<<" has been scanned"<<endl;
+						roomid = room[1];
+					}
+					else if(strncmp(temp, "ROOMSCH", 7)==0)	//this asks for the room's full schedule
+					{
+						cout<<"RoomSchedule has been requested"<<endl;
+						getRoomSchedule(temp, res, conn, connection);
+					}
+					else if(strncmp(temp, "ROOMDTE", 7)==0)	//this asks for the room's schedule on a particular date
+					{
+						cout<<"RoomDate has been requested"<<endl;
+						char* pch;
+						char* date[2];
+						pch = strtok(temp, "|");
+						for(int i=0; i<2; i++)
+						{
+							date[i] = pch;
+							pch = strtok (NULL, "|");
+						}
+						//send request
+						char sendtemp[64];
+						strcpy(sendtemp, roomid.c_str());
+						getRoomScheduleDate(sendtemp, date[1], res, conn, connection);
+					}
+					else if(strncmp(temp, "RESERVE", 7)==0)	//this asks to reserve a particular room
+					{
+						cout<<"RoomReservation has been requested"<<endl;
+						//parse through the request
+						char* pch;
+						char* date[3];
+						pch = strtok(temp, "|");
+						for(int i=0; i<3; i++)
+						{
+							date[i] = pch;
+							pch = strtok (NULL, "|");
+						}
+						char roomtemp[64];
+						strcpy(roomtemp, roomid.c_str());
+						char usertemp[64];
+						strcpy(usertemp, username.c_str());
+						//send the request to the database
+						reserve(usertemp, roomtemp, date[1], date[2], res, conn, connection);
+					}
+					else if(strncmp(temp, "DELETE", 6)==0)	//this asks to delete a reservation for a room
+					{
+						cout<<"Reservation deletion has been requested"<<endl;
+						char* pch;
+						char* date[3];
+						pch = strtok(temp, "|");
+						for(int i=0; i<3; i++)
+						{
+							date[i] = pch;
+							pch = strtok (NULL, "|");
+						}
+						char roomtemp[64];
+						strcpy(roomtemp, roomid.c_str());
+						char usertemp[64];
+						strcpy(usertemp, username.c_str());
+						//send the request to the database
+						unreserve(roomtemp, usertemp, date[1], date[2], res, conn, connection);
+					}
+					else if(strncmp(temp, "GETIP", 5)==0)	//this asks for the ip address of a computer for a room
+					{
+						cout<<"IP has been requested"<<endl;
+						char roomtemp[64];
+						strcpy(roomtemp, roomid.c_str());
+						getIP(roomtemp,res,conn,connection);
+					}
+					else if(strncmp(temp, "GETSCH", 6)==0)	//this asks for the user's schedules
+					{
+						cout<<"User Schedule has been requested"<<endl;
+						char usetemp[64];
+						strcpy(usetemp, username.c_str());
+						getUserSchedule(usetemp, res, conn, connection);
+					}
+					else					//invalid command
+					{
+						cout<<"Invalid command, ignoring"<<endl;
+					}
+				}
 			}
-        		//send request
-        		char sendtemp1[256];
-        		strcpy(sendtemp1, username.c_str());
-        		char sendtemp2[256];
-        		strcpy(sendtemp2, roomid.c_str());
-        		reserve(sendtemp1, sendtemp2, date[1], date[2], res, conn, connection);
-        	}
-        	else if(rec_web_data.compare(0,5,"DELETE")==0)	//I WANT TO DELETE A RESERVATION
-        	{
-        		//parse
-        		char temp[256];
-        		char* pch;
-        		char* date[3];
-        		strcpy(temp, rec_web_data.c_str());
-        		pch = strtok(temp, ":");
-        		for(int i=0; i<3; i++)
-        		{
-			      	date[i] = pch;
-			      	pch = strtok (NULL, ": ");
-			      }
-        		//send request
-        		unreserve(username.c_str(), roomid.c_str(), date[1], date[2], res, conn, connection)
-        	}
-        	else if(rec_web_data.compare(0,4,"GETIP")==0)	//GIVE ME THE IP TO THE COMPUTER RAWR
-        	{
-        		getIP(roomid.c_str(), res, conn, connection);
-        	}
-        }
-        
-      }
-      	    PQfinish(conn);
-	    cout << "[DEVICE]: Closed connection" << endl;
-	    return 0;
-	  }
+			//terminate connection with database
+			PQfinish(conn);
+			cout << "[DEVICE]: Closed connection" << endl;
+			return 0;
+		}
 	}
 	// End Waiting for connections
 	return 0;
@@ -401,7 +428,6 @@ static void getRoomScheduleDate(char* roomid, char* date, PGresult *res, PGconn 
 }
 
 // used as a check for reserving rooms, returns true if such no such schedule exists , false otherwise
-
 static bool getRoomScheduleDate(char* roomid, char* start, char* end, PGresult *res, PGconn *conn)
 {
 	//format message to database
@@ -475,14 +501,12 @@ static void reserve(char* userid, char* roomid, char* start, char* end, PGresult
 		PQclear(res);
 		string message("Win");
 		connection.sendData(message);
-
 		return;
 	}
 	else
 	{
 		string message("Fail, Time slot is already taken");
 		connection.sendData(message);
-
 		return;
 	}
 }
@@ -493,13 +517,11 @@ static void unreserve(char* userid, char* roomid, char* start, char* end, PGresu
 	{
 		string message("Fail, no such reservation");
 		connection.sendData(message);
-
 		return;
 	}
 	else
 	{
 		char* temp = "DELETE FROM reservation WHERE reservation.user_id = $1 AND reservation.room_id = $2 AND reservation.start_time = $3 AND reservation.end_time = $4;";
-
 		const char* paramValues[4];
 		paramValues[0] = userid;
 		paramValues[1] = roomid;
@@ -516,7 +538,6 @@ static void unreserve(char* userid, char* roomid, char* start, char* end, PGresu
 		connection.sendData(message);
 		return;
 	}
-
 }
 
 static void getIP(char* roomid, PGresult *res, PGconn* conn, socketLink connection)
@@ -531,7 +552,6 @@ static void getIP(char* roomid, PGresult *res, PGconn* conn, socketLink connecti
 	{
 		string message("NSC");
 		connection.sendData(message);
-
 	}
 	else
 	{
