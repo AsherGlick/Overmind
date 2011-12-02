@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import overmind.wheel.R;
+import kankan.wheel.R;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.os.Environment;

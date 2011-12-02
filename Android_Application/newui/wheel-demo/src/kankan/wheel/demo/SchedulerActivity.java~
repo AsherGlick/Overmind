@@ -1,15 +1,15 @@
 package overmind.android.application;
 
-import overmind.android.application.R;
-import overmind.android.application.widget.OnWheelChangedListener;
-import overmind.android.application.widget.OnWheelClickedListener;
-import overmind.android.application.widget.OnWheelScrollListener;
-import overmind.android.application.widget.WheelView;
-import overmind.android.application.widget.adapters.AbstractWheelTextAdapter;
-import overmind.android.application.adapters.ArrayWheelAdapter;
-import overmind.android.application.widget.adapters.NumericWheelAdapter;
+import kankan.wheel.R;
+import kankan.wheel.widget.OnWheelChangedListener;
+import kankan.wheel.widget.OnWheelClickedListener;
+import kankan.wheel.widget.OnWheelScrollListener;
+import kankan.wheel.widget.WheelView;
+import kankan.wheel.widget.adapters.AbstractWheelTextAdapter;
+import kankan.wheel.widget.adapters.ArrayWheelAdapter;
+import kankan.wheel.widget.adapters.NumericWheelAdapter;
 
-import overmind.android.application.demo.DatePickerDialogWithTitle;
+import kankan.wheel.demo.DatePickerDialogWithTitle;
 
 import android.app.Activity;
 import android.content.Context;
