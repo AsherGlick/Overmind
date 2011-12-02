@@ -31,6 +31,7 @@ import android.widget.DatePicker;
 //import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 public class SchedulerActivity extends Activity {
     
@@ -49,6 +50,12 @@ public class SchedulerActivity extends Activity {
 	
 	// Time scrolled flag
 	private boolean timeScrolled = false;
+	
+	
+	private int startHour;
+	private int endHour;
+	private int startMinute;
+	private int endMinute;
 
     
 	/** Called when the activity is first created. */
@@ -232,9 +239,25 @@ public class SchedulerActivity extends Activity {
 		// add listeners for when the wheel changes
 		addChangingListener(minsStart, "min");
 		addChangingListener(hoursStart, "hour");
+		addChangingListener(minsEnd,"min");
+		addChangingListener(hoursEnd,"hour");
 	
 		OnWheelChangedListener wheelListener = new OnWheelChangedListener() {
 			public void onChanged(WheelView wheel, int oldValue, int newValue) {
+				if (wheel == (WheelView) findViewById(R.id.hoursEnd)) {
+					endHour = newValue;
+				}
+				if (wheel == (WheelView) findViewById(R.id.hoursStart)) {
+					startHour = newValue+1;
+				}
+				if (wheel == (WheelView) findViewById(R.id.minsEnd)) {
+					endMinute = newValue;
+				}
+				if (wheel == (WheelView) findViewById(R.id.minsStart)) {
+					startMinute = newValue+1;
+				}
+				
+				
 				if (!timeScrolled) {
 					timeChanged = true;
 					//picker.setCurrentHour(hours.getCurrentItem());
@@ -332,6 +355,7 @@ public class SchedulerActivity extends Activity {
     public String getMonthName(int m)
     {
     	String monthString="";
+    	m = m+1; ///////////////////////////// FIX THIS /////////////////////////////
     	switch (m) {
         case 1:  monthString = "Jan.";       break;
         case 2:  monthString = "Feb.";      break;
@@ -372,6 +396,15 @@ public class SchedulerActivity extends Activity {
     	return;
     }
     
+    public void schedule(View view) {
+    	Calendar temp;
+    	temp = setCalendar; ////////////////////// fix this
+    	String startTime = temp.get(Calendar.YEAR)+"-"+(temp.get(Calendar.MONTH)+1)+"-"+temp.get(Calendar.DATE)+" "+startHour+":"+startMinute;
+    	String endTime = temp.get(Calendar.YEAR)+"-"+(temp.get(Calendar.MONTH)+1)+"-"+temp.get(Calendar.DATE)+" "+endHour+":"+endMinute;
+    	//Toast.makeText(this,startTime,Toast.LENGTH_LONG).show();
+    	Toast.makeText(this,startTime,Toast.LENGTH_SHORT).show();
+    	Toast.makeText(this,endTime,Toast.LENGTH_SHORT).show();
+    }
   
 	 //Adds changing listener for wheel that updates the wheel label
 	private void addChangingListener(final WheelView wheel, final String label) {
