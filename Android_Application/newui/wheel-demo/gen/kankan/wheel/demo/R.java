@@ -19,8 +19,6 @@ public final class R {
         public static final int ukraine=0x7f020005;
         public static final int usa=0x7f020006;
         public static final int wheel=0x7f020007;
-        public static final int wheel_bg=0x7f020008;
-        public static final int wheel_val=0x7f020009;
     }
     public static final class id {
         public static final int ampmEnd=0x7f040029;

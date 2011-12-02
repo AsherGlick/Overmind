@@ -1,5 +1,5 @@
-package kankan.wheel.demo;
-//class used to store schedules a user is looking at
+package overmind.android.application;
+
 public class Schedule 
 {
 	private String roomid;

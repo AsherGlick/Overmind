@@ -1,4 +1,4 @@
-package kankan.wheel.demo;
+package overmind.android.application;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import kankan.wheel.demo.R;
+import kankan.wheel.R;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.os.Environment;
@@ -54,7 +54,7 @@ public class FilePickerActivity extends ListActivity {
 	private BufferedReader fromServer;
 	private Socket socket;
 	/********************************** SEND DATA *********************************\
-	| This function sends the data over the opened socket's data inputstream       |
+	| This function sends the data                                                 |
 	\******************************************************************************/
     public void sendData(String data) {
     	try 
@@ -90,9 +90,6 @@ public class FilePickerActivity extends ListActivity {
      //////////////////////////////////////////////////////////////////////////////
     ///////////////////////////// PICK FILE FUNCTIONS ////////////////////////////
    //////////////////////////////////////////////////////////////////////////////
-    /***************************** ON LIST ITEM CLICK *****************************\
-    | Listener function to 
-    \******************************************************************************/
     @Override
 	protected void onListItemClick(ListView l, View v, int position, long id)
     {
