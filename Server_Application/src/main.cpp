@@ -325,11 +325,28 @@ void *deviceThread(void *threadid)
 					}
 				}
 			}
+<<<<<<< HEAD
 			//terminate connection with database
 			PQfinish(conn);
 			cout << "[DEVICE]: Closed connection" << endl;
 			return 0;
 		}
+=======
+        		//send request
+        		unreserve(username.c_str(), roomid.c_str(), date[1], date[2], res, conn, connection)
+        	}
+        	else if(rec_web_data.compare(0,4,"GETIP")==0)	//GIVE ME THE IP TO THE COMPUTER RAWR
+        	{
+        		getIP(roomid.c_str(), res, conn, connection);
+        	}
+        }
+        
+      }
+      	    PQfinish(conn);
+	    cout << "[DEVICE]: Closed connection" << endl;
+	    return 0;
+	  }
+>>>>>>> next
 	}
 	// End Waiting for connections
 	return 0;
@@ -410,7 +427,11 @@ static void getRoomScheduleDate(char* roomid, char* date, PGresult *res, PGconn 
 	PQclear(res);
 }
 
+<<<<<<< HEAD
 // used as a check for reserving rooms, returns true if such no such schedule exists , false otherwise
+=======
+// used as a check for reserving rooms
+>>>>>>> next
 static bool getRoomScheduleDate(char* roomid, char* start, char* end, PGresult *res, PGconn *conn)
 {
 	//format message to database
@@ -466,6 +487,7 @@ static void getUserSchedule(char* userid, PGresult *res, PGconn *conn, socketLin
 
 static void reserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn, socketLink connection)
 {
+<<<<<<< HEAD
 	cout<<"Reserve is called"<<endl;
 	if(getRoomScheduleDate(roomid, start, end, res, conn))
 	{
@@ -473,6 +495,14 @@ static void reserve(char* userid, char* roomid, char* start, char* end, PGresult
 		const char* paramValues[4];
 		paramValues[0] = roomid;
 		paramValues[1] = userid;
+=======
+	if(getRoomScheduleDate(roomid, start, end, res, conn))
+	{
+		char* temp = "INSERT INTO reservation($1, $2, $3, $4);";
+		const char* paramValues[4];
+		paramValues[0] = userid;
+		paramValues[1] = roomid;
+>>>>>>> next
 		paramValues[2] = start;
 		paramValues[3] = end;
 		int paramFormat[4];
@@ -483,13 +513,22 @@ static void reserve(char* userid, char* roomid, char* start, char* end, PGresult
 		res = PQexecParams(conn, temp, 4, NULL, paramValues, NULL, paramFormat, 0);
 		PQclear(res);
 		string message("Win");
+<<<<<<< HEAD
 		connection.sendData(message);
+=======
+		connection.send(message);
+>>>>>>> next
 		return;
 	}
 	else
 	{
+<<<<<<< HEAD
 		string message("Fail, Time slot is already taken");
 		connection.sendData(message);
+=======
+		string message("Fail");
+		connection.send(message);
+>>>>>>> next
 		return;
 	}
 }
@@ -498,13 +537,22 @@ static void unreserve(char* userid, char* roomid, char* start, char* end, PGresu
 {
 	if(getRoomScheduleDate(roomid, start, end, res, conn))
 	{
+<<<<<<< HEAD
 		string message("Fail, no such reservation");
 		connection.sendData(message);
+=======
+		string message("Fail");
+		connection.send(message);
+>>>>>>> next
 		return;
 	}
 	else
 	{
+<<<<<<< HEAD
 		char* temp = "DELETE FROM reservation WHERE reservation.user_id = $1 AND reservation.room_id = $2 AND reservation.start_time = $3 AND reservation.end_time = $4;";
+=======
+		char* temp = "DELETE FROM reservation WHERE reservation.user_id = $1 AND reservation.room_id = $2 AND reservation.reserve_start = $3 AND reservation.reserve_ned = $4;";
+>>>>>>> next
 		const char* paramValues[4];
 		paramValues[0] = userid;
 		paramValues[1] = roomid;
@@ -518,9 +566,16 @@ static void unreserve(char* userid, char* roomid, char* start, char* end, PGresu
 		res = PQexecParams(conn, temp, 4, NULL, paramValues, NULL, paramFormat, 0);
 		PQclear(res);
 		string message("Win");
+<<<<<<< HEAD
 		connection.sendData(message);
 		return;
 	}
+=======
+		connection.send(message);
+		return;
+	}
+	
+>>>>>>> next
 }
 
 static void getIP(char* roomid, PGresult *res, PGconn* conn, socketLink connection)
@@ -534,14 +589,22 @@ static void getIP(char* roomid, PGresult *res, PGconn* conn, socketLink connecti
 	if (PQntuples(res)==0)
 	{
 		string message("NSC");
+<<<<<<< HEAD
 		connection.sendData(message);
+=======
+		connection.send(message);
+>>>>>>> next
 	}
 	else
 	{
 		char* row;
 		row = PQgetvalue(res, 0, 0);
 		string message(row);
+<<<<<<< HEAD
 		connection.sendData(message);
+=======
+		connection.send(message);
+>>>>>>> next
 	}
 }
 
