@@ -36,16 +36,27 @@ public class LoginActivity extends Activity {
     \******************************************************************************/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-    	  IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+    	IntentResult scanResult;
+    	
+    	  scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+    	
+    	  
     	  if (scanResult != null) 
     	  {
-    		  String contents = scanResult.getContents();
+    		  String contents = "";
+    		  contents = scanResult.getContents();
+    		  if (contents == null) {
+    			  Toast.makeText(this, "Did not scan an Overmind QR code", Toast.LENGTH_LONG).show();
+    			  return;
+    		  }
     		  int qrVersion = 0;
-    		  
     		  int i;
     		  i = contents.indexOf('#');
     		  if ( i != -1){
     			  contents = contents.substring(i+1);
+    		  }
+    		  else {
+    			  return;
     		  }
     		  if (contents.substring(0,6).equals("OVRMND")) {
     			  i = contents.indexOf(':');
@@ -119,7 +130,7 @@ public class LoginActivity extends Activity {
   		
   		switch (displayStyle){
   		case 1:
-  			startActivity(new Intent(this, FilePickerActivity.class));
+  			startActivity(new Intent(this, TabbingActivity.class));
   			break;
   		case 2:
   			startActivity(new Intent(this, SchedulerActivity.class));

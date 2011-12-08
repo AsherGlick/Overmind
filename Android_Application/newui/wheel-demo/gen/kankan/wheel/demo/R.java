@@ -13,14 +13,20 @@ public final class R {
     public static final class drawable {
         public static final int canada=0x7f020000;
         public static final int france=0x7f020001;
-        public static final int icon=0x7f020002;
-        public static final int layout_bg=0x7f020003;
-        public static final int my_icon=0x7f020004;
-        public static final int ukraine=0x7f020005;
-        public static final int usa=0x7f020006;
-        public static final int wheel=0x7f020007;
-        public static final int wheel_bg=0x7f020008;
-        public static final int wheel_val=0x7f020009;
+        public static final int ic_tab_android=0x7f020002;
+        public static final int ic_tab_android_selected=0x7f020003;
+        public static final int ic_tab_android_unselected=0x7f020004;
+        public static final int ic_tab_computer=0x7f020005;
+        public static final int ic_tab_computer_selected=0x7f020006;
+        public static final int ic_tab_computer_unselected=0x7f020007;
+        public static final int icon=0x7f020008;
+        public static final int layout_bg=0x7f020009;
+        public static final int my_icon=0x7f02000a;
+        public static final int ukraine=0x7f02000b;
+        public static final int usa=0x7f02000c;
+        public static final int wheel=0x7f02000d;
+        public static final int wheel_bg=0x7f02000e;
+        public static final int wheel_val=0x7f02000f;
     }
     public static final class id {
         public static final int ampmEnd=0x7f040029;
@@ -41,6 +47,8 @@ public final class R {
         public static final int imageButton2=0x7f04001e;
         public static final int label=0x7f040010;
         public static final int linearLayout1=0x7f04000a;
+        public static final int list1=0x7f04002b;
+        public static final int list2=0x7f04002c;
         public static final int minsEnd=0x7f040028;
         public static final int minsStart=0x7f040023;
         public static final int month=0x7f040001;
@@ -60,7 +68,7 @@ public final class R {
         public static final int startTimeLayout=0x7f040021;
         public static final int tableLayout1=0x7f04001d;
         public static final int tableRow2=0x7f040020;
-        public static final int text=0x7f04002b;
+        public static final int text=0x7f04002d;
         public static final int textView1=0x7f040018;
         public static final int toLabel=0x7f040025;
         public static final int username=0x7f04000c;
@@ -74,12 +82,14 @@ public final class R {
         public static final int file_pick=0x7f030002;
         public static final int file_picker=0x7f030003;
         public static final int file_row=0x7f030004;
-        public static final int login_layout=0x7f030005;
-        public static final int middleman=0x7f030006;
-        public static final int ppt_switch=0x7f030007;
-        public static final int scheduler_layout=0x7f030008;
-        public static final int strings=0x7f030009;
-        public static final int units_item=0x7f03000a;
-        public static final int wheel_text_item=0x7f03000b;
+        public static final int list_activity=0x7f030005;
+        public static final int login_layout=0x7f030006;
+        public static final int middleman=0x7f030007;
+        public static final int ppt_switch=0x7f030008;
+        public static final int scheduler_layout=0x7f030009;
+        public static final int strings=0x7f03000a;
+        public static final int tab=0x7f03000b;
+        public static final int units_item=0x7f03000c;
+        public static final int wheel_text_item=0x7f03000d;
     }
 }
