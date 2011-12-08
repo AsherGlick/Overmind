@@ -13,20 +13,21 @@ public final class R {
     public static final class drawable {
         public static final int canada=0x7f020000;
         public static final int france=0x7f020001;
-        public static final int ic_tab_android=0x7f020002;
-        public static final int ic_tab_android_selected=0x7f020003;
-        public static final int ic_tab_android_unselected=0x7f020004;
-        public static final int ic_tab_computer=0x7f020005;
-        public static final int ic_tab_computer_selected=0x7f020006;
-        public static final int ic_tab_computer_unselected=0x7f020007;
-        public static final int icon=0x7f020008;
-        public static final int layout_bg=0x7f020009;
-        public static final int my_icon=0x7f02000a;
-        public static final int ukraine=0x7f02000b;
-        public static final int usa=0x7f02000c;
-        public static final int wheel=0x7f02000d;
-        public static final int wheel_bg=0x7f02000e;
-        public static final int wheel_val=0x7f02000f;
+        public static final int globe=0x7f020002;
+        public static final int ic_tab_android=0x7f020003;
+        public static final int ic_tab_android_selected=0x7f020004;
+        public static final int ic_tab_android_unselected=0x7f020005;
+        public static final int ic_tab_computer=0x7f020006;
+        public static final int ic_tab_computer_selected=0x7f020007;
+        public static final int ic_tab_computer_unselected=0x7f020008;
+        public static final int icon=0x7f020009;
+        public static final int layout_bg=0x7f02000a;
+        public static final int my_icon=0x7f02000b;
+        public static final int ukraine=0x7f02000c;
+        public static final int usa=0x7f02000d;
+        public static final int wheel=0x7f02000e;
+        public static final int wheel_bg=0x7f02000f;
+        public static final int wheel_val=0x7f020010;
     }
     public static final class id {
         public static final int ampmEnd=0x7f040029;

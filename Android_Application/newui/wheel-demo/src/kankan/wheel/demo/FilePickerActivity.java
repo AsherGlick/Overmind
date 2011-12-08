@@ -30,7 +30,7 @@ public class FilePickerActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.file_pick);
+        setContentView(R.layout.ppt_switch);
 
         appState = ((globalVarsApp)getApplicationContext());
         
@@ -85,23 +85,7 @@ public class FilePickerActivity extends ListActivity {
      //////////////////////////////////////////////////////////////////////////////
     ///////////////////////////// PICK FILE FUNCTIONS ////////////////////////////
    //////////////////////////////////////////////////////////////////////////////
-    /***************************** ON LIST ITEM CLICK *****************************\
-    | Listener function to detect when a file is selected                          |
-    \******************************************************************************/
-    @Override
-	protected void onListItemClick(ListView l, View v, int position, long id)
-    {
-    	
-		String item = (String) getListAdapter().getItem(position);
-		Toast.makeText(this, item + " selected", Toast.LENGTH_LONG).show();
-		
-		//selectedFileName = item;
-		
-		createConnection(appState.ipAddress,appState.portNumber);
-		sendData("OPEN|"+item);
-		
-		setContentView(R.layout.ppt_switch);
-	}
+    
     /***************************** FILL LIST COMPUTER *****************************\
     | this fills the list of files from the computer                               |
     \******************************************************************************/
@@ -113,19 +97,7 @@ public class FilePickerActivity extends ListActivity {
     	    	
     	return;    	
     }
-    /****************************** FILL LIST ANDROID *****************************\
-    | This function fill the list of power-point functions with those that are     |
-    | found on the SD card in the downloads folder of the user.                    |
-    \******************************************************************************/
-    public void fillListAndroid(View v)
-    {
-    	combinedList.clear();
-    	String d = ((Environment.getExternalStorageDirectory().toString() ) + "/Download");
-    	combinedList.addAll( (new SDReader(d)).returnFiles() );
-    	adapter.notifyDataSetChanged();
-    	
-    	return;
-    }
+    
     /********************************* REMOVE LIST ********************************\
     | clears the entire list                                                       |
     \******************************************************************************/
@@ -134,7 +106,7 @@ public class FilePickerActivity extends ListActivity {
     	combinedList.removeAll(rem);
     }
     /************************* GET POWERPOINTS ON COMPUTER ************************\
-    | Finds the list of powerpoints that are on the computer, currently this       |
+    | F	inds the list of powerpoints that are on the computer, currently this       |
     | function does not communicate with the computer so it fills the list with    |
     | fake files                                                                   |
     \******************************************************************************/
@@ -145,26 +117,5 @@ public class FilePickerActivity extends ListActivity {
 		fakeList.add("placeholder.ppt");
 		return fakeList;
     }
-	  //////////////////////////////////////////////////////////////////////////////
-	 ///////////////////////// CONTROL SLIDESHOW FUNCTIONS ////////////////////////
-	//////////////////////////////////////////////////////////////////////////////
-	public void prevSlide(View view)
-    {
-    	sendData("PREV");
-    }
-        //sends the message to progress slideshow right
-    public void nextSlide(View view)
-    {
-    	sendData("NEXT");
-    }
-        //sends the message to fullscreen
-    public void fullScreen(View view)
-    {
-    	sendData("FULL");
-    }
-        //sends the message to close slideshow
-    public void closePowerpoint(View view)
-    {
-    	sendData("SHUT");
-    }
+	
 }

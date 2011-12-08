@@ -5,7 +5,7 @@
       android:versionCode="1"
       android:versionName="1.0">
       
-    <application android:icon="@drawable/wheel" android:label="" android:name="kankan.wheel.demo.globalVarsApp" android:debuggable="true">
+    <application android:icon="@drawable/globe" android:label="Overmind" android:name="kankan.wheel.demo.globalVarsApp" android:debuggable="true">
 
 		<activity android:name="kankan.wheel.demo.LaunchActivity" android:screenOrientation="portrait">
 		    <intent-filter>
@@ -31,8 +31,9 @@
                 <category android:name="kankan.wheel.WHEEL_SAMPLE"/>
             </intent-filter>
 		</activity>
-		<activity android:name=".FirstTab" />
-		<activity android:name=".SecondTab" />
+		<activity android:name=".PowerPointControlActivity" android:label="Control the powerpoint" android:screenOrientation="portrait"/>
+		<activity android:name=".ComputerTab" />
+		<activity android:name=".AndroidTab" />
 		<activity android:name=".TabbingActivity" android:label="Pick a File, any file"/>
     </application>
 	<uses-permission android:name="android.permission.INTERNET" /><uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
