@@ -1,7 +1,5 @@
 package kankan.wheel.demo;
 
-
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,65 +18,35 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
+//class used to read off the SD card
 public class SDReader {
-	
-/* private List<String> item = null;
- private List<String> path = null;
- private String root="/";
- private TextView myPath;
-*/
-/*
- * myPath = (TextView)findViewById(R.id.path);
-        
-        //should return mnt/sdcard
-        root =(Environment.getExternalStorageDirectory().toString());
-        //String d = (Environment.getExternalStorageDirectory().toString());
-        //System.out.println(d);
-        //getDir( (Environment.getExternalStorageDirectory().toString()) );
-        /**
-         * for testing purposes, as it is difficult to emulate sd card storage **on Windows**
-         * we will use getDir("testsd");
-         * on Mac/Linux, refer to http://www.brighthub.com/mobile/google-android/articles/33240.aspx
-         * for information on emulating sd card storage
-        **/        
-        
-        //root="/res/testsd";
-        //getDir(root);
-	private String dirPath="/";
-	
+    //the path we are looking at on the sd card
+    private String dirPath="/";
+    //sets the path on the SD card
     public SDReader(String d)
     {
 	   dirPath = d;
     }
+    //reset the path to the beginning
     public SDReader()
     {
 	   dirPath= "/";
     }
-
-    
-
+    //returns the whole list of items on the current path
     public ArrayList<String> returnFiles()
     {
          ArrayList<String> item = new ArrayList<String>();
+         File f = new File(dirPath);
+         File[] contents = f.listFiles(new pptFileFilter());
 
-	     File f = new File(dirPath);
-	     File[] contents = f.listFiles(new pptFileFilter());
-	
-	     if (contents != null) {
-	         for (File file : contents) {
-	        	 item.add(file.getName());
-	         }
-	       }
-	     else
-	     {
-	    	 //item.add(dirPath);//show directory path as couldn't get any file
-	     }
-	    	 
-	     return item;
-     
+         if (contents != null) {
+             for (File file : contents) {
+        	 item.add(file.getName());
+             }
+         }
+	 return item;
     }
-     
+    //check for presence of sd card
     private int checkExternalMedia(){
         
         String state = Environment.getExternalStorageState();
@@ -96,6 +64,7 @@ public class SDReader {
     }
     
     /*@Override
+    //to be implemented lated
     protected void onListItemClick(ListView l, View v, int position, long id) {
 		 File file = new File(path.get(position));
 		  if (file.isDirectory())

@@ -1,9 +1,16 @@
+<<<<<<< HEAD
  /****\
  * [OS_Client.cpp] is part of Project Overmind and is
  * under the same licence
  * Compile with -L"C:\Program Files\Microsoft SDKs\Windows\v7.1\Lib" and -lw2_32
  * Authors: [Zi Ming Lin]
  \****/
+=======
+/*
+ * OS_Client.
+ * Compile with -L"C:\Program Files\Microsoft SDKs\Windows\v7.1\Lib" and -lw2_32
+*/
+>>>>>>> 1af068d7d3266421602334a471605d01d0334484
 
 //Required to compile. Deals with certain SOCKET functions.
 #define _WIN32_WINNT 0x501
@@ -23,6 +30,7 @@
 using namespace std;
 
 /*
+<<<<<<< HEAD
 void* open_ppt(void* arg)
 {
 	char* name = (char*)arg;
@@ -30,6 +38,8 @@ void* open_ppt(void* arg)
 	return 0;
 }*/
 /*
+=======
+>>>>>>> 1af068d7d3266421602334a471605d01d0334484
  * main
  * starts the OS client on the background.
  * Due to the length of the main function, there will be comments within the function.
@@ -50,9 +60,14 @@ int main(void)
 	
 	while(true)
 	{
+<<<<<<< HEAD
 		WSADATA wsaData;
 		//int test;
 	
+=======
+		//variable initiations;
+		WSADATA wsaData;
+>>>>>>> 1af068d7d3266421602334a471605d01d0334484
 		SOCKET ListenSocket = INVALID_SOCKET;
 		SOCKET ClientSocket = INVALID_SOCKET;
 	
@@ -78,8 +93,11 @@ int main(void)
 		serverS.ai_flags = AI_PASSIVE;
 		
 		//Set up the address and port.
+<<<<<<< HEAD
 		//test = getaddrinfo(NULL, port, &server, &listen);
 		//if (test != 0)
+=======
+>>>>>>> 1af068d7d3266421602334a471605d01d0334484
 		if (getaddrinfo(NULL, port, &serverS, &listenS))
 		{
 			cerr << "getaddrinfo failed" << endl;
@@ -130,17 +148,29 @@ int main(void)
 			return 1;
 		}
 		closesocket(ListenSocket);
+<<<<<<< HEAD
 			// Keep doing the commands the phone sends.
+=======
+		// Keep doing the commands the phone sends.
+>>>>>>> 1af068d7d3266421602334a471605d01d0334484
 		Application* app = new PowerPointApp();
 		char filename[buffer_len];
 		char filesz[buffer_len];
 		int received = 1;
+<<<<<<< HEAD
 		do
+=======
+		do 	//this while connection is not closed
+>>>>>>> 1af068d7d3266421602334a471605d01d0334484
 		{
 			received = recv(ClientSocket, buffer, buffer_len, 0);
 			if (received > 0)
 			{
 				printf("%s\n", buffer);
+<<<<<<< HEAD
+=======
+				//act upon recieved messaged
+>>>>>>> 1af068d7d3266421602334a471605d01d0334484
 				if(strncmp(buffer, "OPEN", 4)==0)
 				{
 					//Code to display powerpoints
@@ -149,11 +179,15 @@ int main(void)
 					tx = strtok(NULL, "|");
 					strcpy(filename, tx);
 					pid_t pid = fork();
+<<<<<<< HEAD
 					//printf("%d\n", pid);
+=======
+>>>>>>> 1af068d7d3266421602334a471605d01d0334484
 					if (pid < 0)
 					{
 						perror( "fork failed\n");
 					}
+<<<<<<< HEAD
 						else if( pid == 0)
 						{
 							execlp("C:/Program Files (x86)/Microsoft Office/Office12/POWERPNT.exe", "POWERPNT.exe", "/N", filename, NULL);
@@ -162,6 +196,14 @@ int main(void)
 						{
 						}
 				}
+=======
+					else if( pid == 0)
+					{
+						execlp("C:/Program Files (x86)/Microsoft Office/Office12/POWERPNT.exe", "POWERPNT.exe", "/N", filename, NULL);
+					}
+				}
+				//reacts to a file
+>>>>>>> 1af068d7d3266421602334a471605d01d0334484
 				else if(strncmp(buffer, "FILE", 4)==0)
 				{
 					received = recv(ClientSocket, buffer, buffer_len, 0);
@@ -181,7 +223,10 @@ int main(void)
 						write(output, buffer, received);
 					}
 					pid_t pid = fork();
+<<<<<<< HEAD
 					//printf("%d\n", pid);
+=======
+>>>>>>> 1af068d7d3266421602334a471605d01d0334484
 					if (pid < 0)
 					{
 						perror( "fork failed\n");
@@ -190,9 +235,12 @@ int main(void)
 					{
 						execlp("C:/Program Files (x86)/Microsoft Office/Office12/POWERPNT.exe", "POWERPNT.exe", "/N", filename, NULL);
 					}
+<<<<<<< HEAD
 					else
 					{
 					}
+=======
+>>>>>>> 1af068d7d3266421602334a471605d01d0334484
 				}
 				else
 				{
@@ -225,4 +273,8 @@ int main(void)
 		WSACleanup();
 	}
 	return 0;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 1af068d7d3266421602334a471605d01d0334484

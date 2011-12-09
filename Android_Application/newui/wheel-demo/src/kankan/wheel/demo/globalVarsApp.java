@@ -1,5 +1,8 @@
 package kankan.wheel.demo;
 
+import java.io.DataOutputStream;
+import java.net.Socket;
+
 import android.app.Application;
 
 /******************************* GLOBAL VARS APP ******************************\
@@ -12,9 +15,16 @@ import android.app.Application;
 \******************************************************************************/
 
 public class globalVarsApp extends Application {
+	// USER INFO
 	public String username;
 	public String password;
+	
+	// QR INFO
 	public String ipAddress;
 	public int portNumber;
 	public String extraData;
+	
+	// Socket INFO
+	public Socket socket;
+	public DataOutputStream toServer;
 }

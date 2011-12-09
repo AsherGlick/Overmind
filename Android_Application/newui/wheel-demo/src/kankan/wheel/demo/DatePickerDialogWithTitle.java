@@ -2,7 +2,6 @@ package kankan.wheel.demo;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.widget.DatePicker;
 
@@ -32,8 +31,8 @@ class DatePickerDialogWithTitle extends android.app.DatePickerDialog {
     	String dayOfWeek = "";
     	switch (d)
 		{
-    		case 1:  dayOfWeek = "Sunday";       	break;
-            case 2:  dayOfWeek = "Monday";      	break;
+    	    case 1:  dayOfWeek = "Sunday";          break;
+            case 2:  dayOfWeek = "Monday";          break;
             case 3:  dayOfWeek = "Tuesday";         break;
             case 4:  dayOfWeek = "Wednesday";       break;
             case 5:  dayOfWeek = "Thursday";        break;

@@ -1,16 +1,11 @@
 package kankan.wheel.demo;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+//import java.io.BufferedReader;//to implement later
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
 
-import kankan.wheel.R;
+import kankan.wheel.demo.R;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,7 +30,7 @@ public class FilePickerActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.file_pick);
+        setContentView(R.layout.ppt_switch);
 
         appState = ((globalVarsApp)getApplicationContext());
         
@@ -51,10 +46,10 @@ public class FilePickerActivity extends ListActivity {
     /////////////////// SOCKET COMMUNICATION FUNCTIONS (SHARED) //////////////////
    //////////////////////////////////////////////////////////////////////////////
 	private DataOutputStream toServer;
-	private BufferedReader fromServer;
+	//private BufferedReader fromServer;// to implement later
 	private Socket socket;
 	/********************************** SEND DATA *********************************\
-	| This function sends the data                                                 |
+	| This function sends the data over the opened socket's data inputstream       |
 	\******************************************************************************/
     public void sendData(String data) {
     	try 
@@ -90,21 +85,10 @@ public class FilePickerActivity extends ListActivity {
      //////////////////////////////////////////////////////////////////////////////
     ///////////////////////////// PICK FILE FUNCTIONS ////////////////////////////
    //////////////////////////////////////////////////////////////////////////////
-    @Override
-	protected void onListItemClick(ListView l, View v, int position, long id)
-    {
-    	
-		String item = (String) getListAdapter().getItem(position);
-		Toast.makeText(this, item + " selected", Toast.LENGTH_LONG).show();
-		
-		//selectedFileName = item;
-		
-		createConnection(appState.ipAddress,appState.portNumber);
-		sendData("OPEN|"+item);
-		
-		setContentView(R.layout.ppt_switch);
-	}
     
+    /***************************** FILL LIST COMPUTER *****************************\
+    | this fills the list of files from the computer                               |
+    \******************************************************************************/
     public void fillListComputer(View v)
     {
     	combinedList.clear();
@@ -113,23 +97,19 @@ public class FilePickerActivity extends ListActivity {
     	    	
     	return;    	
     }
-    /****************************** FILL LIST ANDROID *****************************\
-    | This function fill the list of power-point functions with those that are     |
-    | found on the SD card in the downloads folder of the user.                    |
+    
+    /********************************* REMOVE LIST ********************************\
+    | clears the entire list                                                       |
     \******************************************************************************/
-    public void fillListAndroid(View v)
-    {
-    	combinedList.clear();
-    	String d = ((Environment.getExternalStorageDirectory().toString() ) + "/Download");
-    	combinedList.addAll( (new SDReader(d)).returnFiles() );
-    	adapter.notifyDataSetChanged();
-    	
-    	return;
-    }
     public void removeList(ArrayList<String> rem)
     {
     	combinedList.removeAll(rem);
     }
+    /************************* GET POWERPOINTS ON COMPUTER ************************\
+    | F	inds the list of powerpoints that are on the computer, currently this       |
+    | function does not communicate with the computer so it fills the list with    |
+    | fake files                                                                   |
+    \******************************************************************************/
 	public ArrayList<String> getPptsOnComputer()
     {
 		ArrayList<String> fakeList = new ArrayList<String>();	
@@ -137,26 +117,5 @@ public class FilePickerActivity extends ListActivity {
 		fakeList.add("placeholder.ppt");
 		return fakeList;
     }
-	  //////////////////////////////////////////////////////////////////////////////
-	 ///////////////////////// CONTROL SLIDESHOW FUNCTIONS ////////////////////////
-	//////////////////////////////////////////////////////////////////////////////
-	public void prevSlide(View view)
-    {
-    	sendData("PREV");
-    }
-        //sends the message to progress slideshow right
-    public void nextSlide(View view)
-    {
-    	sendData("NEXT");
-    }
-        //sends the message to fullscreen
-    public void fullScreen(View view)
-    {
-    	sendData("FULL");
-    }
-        //sends the message to close slideshow
-    public void closePowerpoint(View view)
-    {
-    	sendData("SHUT");
-    }
+	
 }

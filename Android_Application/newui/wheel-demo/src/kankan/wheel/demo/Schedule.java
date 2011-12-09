@@ -1,5 +1,5 @@
 package kankan.wheel.demo;
-
+//class used to store schedules a user is looking at
 public class Schedule 
 {
 	private String roomid;

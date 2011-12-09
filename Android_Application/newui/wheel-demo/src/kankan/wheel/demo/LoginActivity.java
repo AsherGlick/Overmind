@@ -1,7 +1,5 @@
 package kankan.wheel.demo;
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +12,7 @@ public class LoginActivity extends Activity {
 	 /** Called when the activity is first created. */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        //set the display
         setContentView(R.layout.login_layout);
         appState = ((globalVarsApp)getApplicationContext());
     }
@@ -38,16 +36,27 @@ public class LoginActivity extends Activity {
     \******************************************************************************/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-    	  IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+    	IntentResult scanResult;
+    	
+    	  scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+    	
+    	  
     	  if (scanResult != null) 
     	  {
-    		  String contents = scanResult.getContents();
+    		  String contents = "";
+    		  contents = scanResult.getContents();
+    		  if (contents == null) {
+    			  Toast.makeText(this, "Did not scan an Overmind QR code", Toast.LENGTH_LONG).show();
+    			  return;
+    		  }
     		  int qrVersion = 0;
-    		  
     		  int i;
     		  i = contents.indexOf('#');
     		  if ( i != -1){
     			  contents = contents.substring(i+1);
+    		  }
+    		  else {
+    			  return;
     		  }
     		  if (contents.substring(0,6).equals("OVRMND")) {
     			  i = contents.indexOf(':');
@@ -89,7 +98,7 @@ public class LoginActivity extends Activity {
     \******************************************************************************/
     public void parseQRVersionOne(String contents) {
     	// sample qr code text
-		// http://projectovermind.com/getreader#OVRMND1:128.113.140.78:80:1:sage3202
+	// http://projectovermind.com/getreader#OVRMND1:128.113.140.78:80:1:sage3202
     	// example of code passed to the function
     	// 128.113.140.78:80:1:sage3202
     	String ipAddress = "0.0.0.0";
@@ -121,7 +130,7 @@ public class LoginActivity extends Activity {
   		
   		switch (displayStyle){
   		case 1:
-  			startActivity(new Intent(this, FilePickerActivity.class));
+  			startActivity(new Intent(this, TabbingActivity.class));
   			break;
   		case 2:
   			startActivity(new Intent(this, SchedulerActivity.class));

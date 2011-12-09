@@ -20,7 +20,7 @@ static void parseString(char* temp, char* temp0)
 		pch = strtok(NULL, "()\"");	
 	}
 }
-
+/*
 // getRoomSchedule:
 // Calls getRoomSchedule on the database.
 // Parses the return values and sends them to the phone.
@@ -132,25 +132,32 @@ static void getUser(char* userid, PGresult *res, PGconn *conn)
 	}
 	PQclear(res);
 }
-
-static void reserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn)
+*/
+static void reserve(char* roomid, char* userid, char* start, char* end, PGresult *res, PGconn *conn)
 {
-	char* temp = "INSERT INTO reservation($1, $2, $3, $4);";
+	char* temp = "INSERT INTO reservation VALUES($1, $2, $3, $4);";
+	//char* temp0 = "";
+	//strcat(temp0, temp);
 	const char* paramValues[4];
-	paramValues[0] = userid;
-	paramValues[1] = roomid;
+	paramValues[0] = roomid;
+	paramValues[1] = userid;
 	paramValues[2] = start;
 	paramValues[3] = end;
-	int paramFormat[4];
+	/*int paramFormat[4];
 	paramFormat[0] = 0;
 	paramFormat[1] = 0;
 	paramFormat[2] = 0;
 	paramFormat[3] = 0;
-	res = PQexecParams(conn, temp, 1, NULL, paramValues, NULL, paramFormat, 0);
+	*/
+	res = PQexecParams(conn, temp, 4, NULL, paramValues, NULL, NULL, 0);
+	
+	//int j = PQntuples(res);
+	//char* temp0 = PQgetvalue(res, j, 0);
+	//printf("%s\n", temp0);
 	
 	PQclear(res);
 }
-
+/*
 static void unreserve(char* userid, char* roomid, char* start, char* end, PGresult *res, PGconn *conn)
 {
 	char* temp = "DELETE FROM reservation WHERE reservation.user_id = $1 AND reservation.room_id = $2 AND reservation.reserve_start = $3 AND reservation.reserve_ned = $4;";
@@ -167,7 +174,7 @@ static void unreserve(char* userid, char* roomid, char* start, char* end, PGresu
 	res = PQexecParams(conn, temp, 1, NULL, paramValues, NULL, paramFormat, 0);
 	
 	PQclear(res);
-}
+}*/
 
 // Quits the connection to the database.
 static void exit_nicely(PGconn *conn)
@@ -191,7 +198,7 @@ main(int argc, char **argv)
     if (argc > 1)
         conninfo = argv[1];
     else
-        conninfo = "host=server.projectovermind.com port=5432 dbname=roommanager user=overmind password=chexmix";
+        conninfo = "host=localhost port=5432 dbname=roommanager user=overmind password=chexmix";
 
     /* Make a connection to the database */
     conn = PQconnectdb(conninfo);
@@ -204,8 +211,11 @@ main(int argc, char **argv)
         exit_nicely(conn);
     }
 
-    getRoomSchedule("123",res,conn);
-    /* close the connection to the database and cleanup */
+    //char* temp = "INSERT INTO reservation VALUES('room2', 'user3', '11-11-12 15:00','11-11-12 16:00');";
+    //res = PQexec(conn, temp);
+    reserve("room2", "user3", "11-11-12 15:00","11-11-12 16:00", res, conn);
+    
+    		/* close the connection to the database and cleanup */
     PQfinish(conn);
 
     return 0;
